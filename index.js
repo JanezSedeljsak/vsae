@@ -5,6 +5,11 @@ module.exports = class VSAE {
         const vRegex = /\d+(\+|\-|\*|\/)\d+/;
         return vRegex.test(_expression);
     }*/
+    isEquation = _expression => expression.includes('x') ? true : false;
+
+    solveEquation(_expression) {
+        //
+    }
 
     validateNumber(_num) {
         const vRegex = /^(-?\d+\.\d+)$|^(-?\d+)$/;
@@ -18,11 +23,11 @@ module.exports = class VSAE {
     }
 
     applyOpperand(_num1, _num2, _operator) {
-        let num1 = this.validateNumber(_num1) ? Number(_num1) : undefined;
-        let num2 = this.validateNumber(_num2) ? Number(_num2) : undefined;
+        let num1 = this.validateNumber(_num1) ? Number(_num1) : NaN;
+        let num2 = this.validateNumber(_num2) ? Number(_num2) : NaN;
         let operator = this.precedence(_operator);
-        if(!num1 || !num2 || operator == 0) 
-            return undefined;
+        if([num1, num2].includes(NaN) || operator == 0) 
+            return NaN;
         switch(_operator) {
             case '+':
                 return num1 + num2;
@@ -33,7 +38,7 @@ module.exports = class VSAE {
             case '/':
                 return num1 / num2;
             default: 
-                return undefined;
+                return NaN;
         }
     }
 
