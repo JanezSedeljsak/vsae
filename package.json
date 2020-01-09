@@ -1,0 +1,23 @@
+{
+  "name": "vsae",
+  "version": "1.0.0",
+  "description": "visualization of solving arithmetic expressions",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test --experimental-modules test.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JanezSedeljsak/vsae.git"
+  },
+  "keywords": [
+    "node",
+    "math"
+  ],
+  "author": "Janez Sedeljsak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JanezSedeljsak/vsae/issues"
+  },
+  "homepage": "https://github.com/JanezSedeljsak/vsae#readme"
+}
