@@ -5,7 +5,9 @@ module.exports = class VSAE {
         const vRegex = /\d+(\+|\-|\*|\/)\d+/;
         return vRegex.test(_expression);
     }*/
-    isEquation = _expression => expression.includes('x') ? true : false;
+    isEquation(_expression) {
+        return expression.includes('x') ? true : false;
+    } 
 
     solveEquation(_expression) {
         //
@@ -98,5 +100,41 @@ module.exports = class VSAE {
     }
 
     getSolvingProcess(_expression) {
+        let subsetOfSteps = [];
+        if(_expression.includes('(')) {
+            let level = 1;
+            let groups = [];
+            let sbc = []; // starting brackets indexes
+            let ebc = []; // ending brackets indexes
+            let groups = [];
+            for (const key in _expression) {
+                if(_expression[key] == '(') {
+                    if(sbc.length && ebc.length) 
+                        if(sbc[sbc.length - 1] > ebc[ebc.length - 1]) 
+                            level++;
+                        
+                    else if (sbc.length && !ebc.length) 
+                        level++;
+                    
+                    sbc.push({
+                        level: level,
+                        index: key
+                    });
+                }
+                else if(_expression[key] == ')') {
+                    ebc.push({
+                        level: level,
+                        index: key
+                    });
+                }
+            }
+            if (ebc.length != sbc.length) return null;
+            for(const key of ebc) {
+                ebc[key] = { s: ebc[key] };
+
+                
+            }
+        }
+        return null;
     }
 }
