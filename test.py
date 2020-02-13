@@ -1,6 +1,5 @@
 
 # import modules for binary tree parsing
-from modules.binary_tree.Node import Index as Node
 from modules.binary_tree.ToTreeConv import Index as build_tree
 from modules.binary_tree.TreeEvaluation import Index as binaryTreeEvaluation
 
