@@ -2,7 +2,7 @@ import re
 
 def is_number(str):
     try:
-        int(str)
+        float(str)
         return True
     except ValueError:
         return False
@@ -26,7 +26,7 @@ def Index(expression):
     operators = []
     for token in tokens:
         if is_number(token):
-            values.append(int(token))
+            values.append(float(token))
         elif token == '(':
             operators.append(token)
         elif token == ')':
