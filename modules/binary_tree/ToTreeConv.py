@@ -1,4 +1,4 @@
-from modules.Node import Node
+from modules.binary_tree.Node import Index as Node
 
 
 def is_greater_precedence(op1, op2):
@@ -11,7 +11,7 @@ def associativity(op):
     return ass[op]
 
 
-def ToTreeConv(exp):
+def Index(exp):
     exp_list = exp.split()
     stack = []
     tree_stack = []

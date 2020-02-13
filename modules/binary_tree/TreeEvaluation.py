@@ -1,7 +1,7 @@
 import operator
-from modules.Node import Node
+from modules.binary_tree.Node import Index as Node
 
-def TreeEvaluation(expTree):
+def Index(expTree):
     opers = {'+':operator.add, '-':operator.sub, '*':operator.mul, '/':operator.truediv, '^':operator.pow}
 
     leftC = expTree.left
@@ -9,6 +9,6 @@ def TreeEvaluation(expTree):
 
     if leftC and rightC:
         fn = opers[expTree.data]
-        return fn(TreeEvaluation(leftC), TreeEvaluation(rightC))
+        return fn(Index(leftC), Index(rightC))
     else:
         return expTree.data

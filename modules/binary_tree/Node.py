@@ -1,4 +1,4 @@
-class Node:
+class Index:
     def __init__(self, value):
         self.left = None
         self.data = value
