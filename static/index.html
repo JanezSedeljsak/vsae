@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>VSAE documentation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
+        @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap');
+        pre {
+            outline: 1px solid #ccc;
+            background-color: #333;
+            padding: 5px;
+            margin: 5px;
+            font-size: 18px;
+            color: #eee;
+            letter-spacing: 1px;
+        }
+        .string { color: #579157 }
+        .number { color: #5776c4 }
+        .boolean { color: #a04f4f }
+        .null { color: #808080 }
+        .key { color: #eee }
+        h2 { font-family: 'Montserrat', sans-serif !important }
+    </style>
+</head>
+
+<body style="background-image: url(https://i.pinimg.com/originals/96/2e/c1/962ec14def36cfbc63344802e0b86482.jpg);">
+    <div id="myoutputdiv">
+        <h2>API documentation</h2>
+    </div>
+</body>
+<script>
+
+    jsonDisplay = {
+
+        jsonstring: '',
+        outputDivID: 'shpretty',
+
+        outputPretty: function (jsonstring) {
+            jsonstring = jsonstring == '' ? jsonDisplay.jsonstring : jsonstring;
+            var pretty = JSON.stringify(JSON.parse(jsonstring), null, 2);
+            shpretty = jsonDisplay.syntaxHighlight(pretty);
+            newDiv = document.createElement("pre");
+            newDiv.innerHTML = shpretty;
+            document.getElementById(jsonDisplay.outputDivID).appendChild(newDiv);
+        },
+
+        syntaxHighlight: function (json) {
+
+            if (typeof json != 'string') {
+                json = JSON.stringify(json, undefined, 2);
+            }
+
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                var cls = 'number';
+                if (/^"/.test(match)) {
+                    cls = (/:$/.test(match)) ? 'key' : 'string';
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+    }
+
+    var myjson = '{"a": true,"0": "is it the first number?","object": {"B": "2nd letter","1": "maybe this is the first number"},"array": ["A", "b", "C", "d", "E", "f", "can you guess the rest?"],"numericarray":[0,2,4,6,8]}';
+
+    jsonDisplay.jsonstring = myjson;
+    jsonDisplay.outputDivID = "myoutputdiv";
+    jsonDisplay.outputPretty(myjson);
+</script>
+
+</html>
