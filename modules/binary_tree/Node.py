@@ -4,6 +4,12 @@ class Index:
         self.data = value
         self.right = None
 
+    def toString(self):
+        expression = ""
+
+
+
+
     def postorder(self):
 
         if self.left:
