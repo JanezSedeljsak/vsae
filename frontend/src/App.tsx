@@ -2,25 +2,27 @@ import React, { useState } from 'react';
 import Home from './layouts/home';
 import Waves from './components/waves';
 import { MDBBreadcrumb, MDBBreadcrumbItem, MDBContainer } from 'mdbreact';
+import headerImg from './resources/header-img.png';
 
 export default () => {
     const [layoutIndex, setLayoutIndex] = useState('home');
     const changeLayout = (layoutName : string) : void => setLayoutIndex(layoutName);
 
     const layouts : any = {
-        home: <Home change={changeLayout} />
+        home: <Home />
     }
 
     return (
         <>
             <Waves />
-            <MDBContainer style={{ zIndex: 10 }}>
+            <MDBContainer>
                 <MDBBreadcrumb light className='header'>
-                    <MDBBreadcrumbItem iconRegular icon='star'>
-                        Home
+                    <img src={headerImg} style={{ height: 60, marginRight: 40 }} />
+                    <MDBBreadcrumbItem icon='home'>
+                        Domov
                     </MDBBreadcrumbItem>
-                    <MDBBreadcrumbItem iconRegular icon='star'>
-                        Library
+                    <MDBBreadcrumbItem icon='file'>
+                        Dokumentacija
                     </MDBBreadcrumbItem>
                 </MDBBreadcrumb>
             </MDBContainer>

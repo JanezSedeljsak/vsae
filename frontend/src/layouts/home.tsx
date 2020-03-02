@@ -1,15 +1,22 @@
 import React, { useState } from "react";
-import { MDBInput } from "mdbreact";
+import { MDBInput, MDBBtn } from "mdbreact";
 
-type HomeProps = {
-    change: any
-}
+export default () => {
+    const [expression, setExpression] = useState('');
 
-export default ({ change }: HomeProps) => {
-  const [outputType, setOutputType] = useState(false);
-  return (
-    <>
-      <MDBInput label="Vnesi izraz" />
-    </>
-  );
+    function validateExpression(str: string): boolean {
+        return /^\w(?:\s[+*]\s\w)+$/.test(str);
+    }
+
+    return (
+        <>
+            <MDBInput
+                value={expression}
+                label="Vnesi izraz"
+                onChange={(e: React.FormEvent<HTMLInputElement>) => setExpression(e.currentTarget.value)}
+            />
+            <MDBBtn disabled={!validateExpression(expression)}>Prikaži binarno drevo</MDBBtn>
+            <MDBBtn color="primary" disabled={!validateExpression(expression)}>Shunting-yard algoritem</MDBBtn>
+        </>
+    );
 };
