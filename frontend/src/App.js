@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Home from "./layouts/home";
+import Waves from "./components/waves";
+import { MDBBreadcrumb, MDBBreadcrumbItem, MDBContainer } from "mdbreact";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [layoutIndex, setLayoutIndex] = useState('home');
+    const layouts = {
+        home: <Home/>
+    }
+    return (
+        <>
+            <Waves />
+            <MDBContainer style={{ zIndex: 10 }}>
+                <MDBBreadcrumb light className="header">
+                    <MDBBreadcrumbItem iconRegular icon="star">
+                        Home
+                    </MDBBreadcrumbItem>
+                    <MDBBreadcrumbItem iconRegular icon="star">
+                        Library
+                    </MDBBreadcrumbItem>
+                </MDBBreadcrumb>
+            </MDBContainer>
+            <div className="content">
+                {layouts[layoutIndex]}
+            </div>
+        </>
+    );
 }
 
 export default App;

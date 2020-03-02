@@ -1,5 +1,6 @@
 from flask import Flask, redirect, send_from_directory, render_template
 import json
+import os
 
 # import modules for binary tree parsing
 from modules.binary_tree.ToTreeConv import Index as build_tree
