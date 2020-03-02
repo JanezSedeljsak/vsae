@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import Home from "./layouts/home";
-import Waves from "./components/waves";
+import Home from "./layouts/home.tsx";
+import Waves from "./components/waves.tsx";
 import { MDBBreadcrumb, MDBBreadcrumbItem, MDBContainer } from "mdbreact";
 
-function App() {
+export default () => {
     const [layoutIndex, setLayoutIndex] = useState('home');
-    const layouts = {
-        home: <Home/>
+    const layouts : Object = {
+        home: <Home change={setLayoutIndex} />
     }
+
     return (
         <>
             <Waves />
@@ -27,5 +28,3 @@ function App() {
         </>
     );
 }
-
-export default App;

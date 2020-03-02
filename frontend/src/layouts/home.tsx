@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { MDBSelect, MDBInput } from "mdbreact";
+import { MDBInput } from "mdbreact";
 
-export default () => {
+export default ({ change }) => {
   const [outputType, setOutputType] = useState(false);
   return (
     <>
