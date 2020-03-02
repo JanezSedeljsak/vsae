@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { MDBInput } from "mdbreact";
 
-export default ({ change }) => {
+type HomeProps = {
+    change: any
+}
+
+export default ({ change }: HomeProps) => {
   const [outputType, setOutputType] = useState(false);
   return (
     <>
