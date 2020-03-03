@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import Home from './layouts/home';
-import Waves from './components/waves';
 import { MDBBreadcrumb, MDBBreadcrumbItem, MDBContainer } from 'mdbreact';
+import ExpressionForm from './layouts/home';
+import Waves from './components/waves';
+import BinaryTree from './layouts/binarytree';
 import headerImg from './resources/header-img.png';
 
 export default () => {
@@ -9,7 +10,7 @@ export default () => {
     const changeLayout = (layoutName : string) : void => setLayoutIndex(layoutName);
 
     const layouts : any = {
-        home: <Home />
+        home: <ExpressionForm />
     }
 
     return (
@@ -27,7 +28,8 @@ export default () => {
                 </MDBBreadcrumb>
             </MDBContainer>
             <div className='content'>
-                {layouts[layoutIndex]}
+                <ExpressionForm />
+                <BinaryTree />
             </div>
         </>
     );

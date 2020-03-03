@@ -35,14 +35,11 @@ nav {
 }
 
 .content {
-    width: 90%;
-    margin-left: 5%;
+    width: 80%;
+    margin-left: 10%;
     min-height: 35vw;
     height: auto;
-    background-color: #f8f8f8;
-    -webkit-box-shadow: 0px 17px 23px -1px rgba(0,0,0,0.47);
-    -moz-box-shadow: 0px 17px 23px -1px rgba(0,0,0,0.47);
-    box-shadow: 0px 17px 23px -1px rgba(0,0,0,0.47);
+    background-color: transparent !important;
     padding: 15px;
     padding-left: 50px;
     padding-right: 50px;
