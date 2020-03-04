@@ -1,24 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { MDBBreadcrumb, MDBBreadcrumbItem, MDBContainer } from 'mdbreact';
-import ExpressionForm from './layouts/home';
+import Content from './layouts/home';
 import Waves from './components/waves';
-import BinaryTree from './layouts/binarytree';
 import headerImg from './resources/header-img.png';
 
 export default () => {
-    const [layoutIndex, setLayoutIndex] = useState('home');
-    const changeLayout = (layoutName : string) : void => setLayoutIndex(layoutName);
-
-    const layouts : any = {
-        home: <ExpressionForm />
-    }
 
     return (
         <>
             <Waves />
             <MDBContainer>
                 <MDBBreadcrumb light className='header'>
-                    <img src={headerImg} style={{ height: 60, marginRight: 40 }} />
+                    <img src={headerImg} style={{ height: 60, marginRight: 40 }} alt="VSAE" />
                     <MDBBreadcrumbItem icon='home'>
                         Domov
                     </MDBBreadcrumbItem>
@@ -28,8 +21,7 @@ export default () => {
                 </MDBBreadcrumb>
             </MDBContainer>
             <div className='content'>
-                <ExpressionForm />
-                <BinaryTree />
+                <Content />
             </div>
         </>
     );

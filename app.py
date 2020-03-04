@@ -1,34 +1,45 @@
-from flask import Flask, redirect, send_from_directory, render_template
-import json
+from flask import Flask, send_from_directory, request, jsonify
+from modules.core.HelperMethods import ServerMethods
+from flask_cors import CORS
 import os
 
 # import modules for binary tree parsing
-from modules.binary_tree.ToTreeConv import Index as build_tree
+from modules.binary_tree.ToTreeConv import Index as buildTreeFromExpression
 from modules.binary_tree.TreeEvaluation import Index as binaryTreeEvaluation
+from modules.binary_tree.TreeToJson import Index as treeToJson
 
 # import modules for shunting yard algorithm
 from modules.shunting_yard_algo.Algorithm import Index as shuntingYardAlgorithmEvaluation 
 
 app = Flask(__name__, static_folder='frontend/build')
 app.config.from_object(__name__)
+CORS(app)
 
-class ServerMethods:
-    @staticmethod
-    def dispatchJSON(obj):
-        return json.dumps(obj, separators=(',', ':'))
-
-@app.route('/api/bte') # binary tree evaluation
+@app.route('/api/bte', methods=['POST']) # binary tree evaluation
 def bte():
-    expression = '3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3'
-    res = "{0}".format(binaryTreeEvaluation(build_tree(expression)))
+    data = request.json
+    expression = data['expression']
+    
+    res = "{0}".format(binaryTreeEvaluation(buildTreeFromExpression(expression)))
     return ServerMethods.dispatchJSON({'result': res})
 
-@app.route('/api/sye') # shunting yard algorithm
+@app.route('/api/sye', methods=['POST']) # shunting yard algorithm
 def sye():
-    expression = '3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3'
+    data = request.json
+    expression = data['expression']
+
     res = "{0}".format(shuntingYardAlgorithmEvaluation(expression))
     return ServerMethods.dispatchJSON({'result': res})
 
+@app.route('/api/bjs', methods=['POST']) # build json structure
+def bjs():
+    data = request.json
+    expression = data['expression']
+
+    res = treeToJson(buildTreeFromExpression(expression))
+    return ServerMethods.dispatchJSON({'result': res})
+
+# serve react
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
