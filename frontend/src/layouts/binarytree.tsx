@@ -3,7 +3,7 @@ import { MDBBtn } from 'mdbreact';
 import Sketch from "react-p5";
 
 interface treeStructure {
-    value: string | null,
+    value: string,
     left: treeStructure | null,
     right: treeStructure | null
 }
@@ -14,8 +14,34 @@ interface Props {
 
 export default (props: Props) => {
 
-    function drawTree(tree: any, p5: any, len: number): void {
-        if (tree.left) {
+    const calcMethods : any = {
+        '+': (left: number, right: number) => (left + right),
+        '-': (left: number, right: number) => (left - right),
+        '/': (left: number, right: number) => (left / right),
+        '*': (left: number, right: number) => (left * right),
+        '^': (left: number, right: number) => (left ^ right)
+    }
+
+    function recursiveTreeSolve(tree: any):  number {
+        const leftC = tree?.left;
+        const rightC = tree?.right;
+        const dataC = tree?.value;
+
+        if (leftC && rightC) {
+            console.log("has both left and right");
+            return calcMethods[tree.value](recursiveTreeSolve(leftC), recursiveTreeSolve(rightC));
+        } else {
+            return Number(dataC);
+        }
+    }
+
+
+    function solveTreeClicked(tree: any): void {
+        console.log(recursiveTreeSolve(tree));
+    }
+
+    function drawTree(tree: treeStructure | undefined, p5: any, len: number): void {
+        if (tree?.left) {
             p5.push();
             p5.line(0, 0, -len, 100);
             p5.translate(-len, 100);
@@ -23,7 +49,7 @@ export default (props: Props) => {
             p5.pop();
         }
 
-        if (tree.right) {
+        if (tree?.right) {
             p5.push();
             p5.line(0, 0, len, 100);
             p5.translate(len, 100);
@@ -35,7 +61,7 @@ export default (props: Props) => {
         p5.ellipse(0, 0, 80, 80);
         p5.strokeWeight(2);
         p5.textSize(40);
-        p5.text(tree.value, -12, 15);
+        p5.text(tree?.value, -12, 15);
     }
 
     function setup(p5: any, canvasRef: any): void {
@@ -46,14 +72,16 @@ export default (props: Props) => {
     }
 
     function draw(p5: any): void {
-        p5.translate(900, 40);
-        drawTree(props.jsonTree, p5, 350);
+        if (props.jsonTree !== undefined) {
+            p5.translate(900, 40);
+            drawTree(props.jsonTree, p5, 350);
+        }
     }
 
     return (
         <>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <MDBBtn color="mdb-color">Naslednji korak</MDBBtn>
+                <MDBBtn color="mdb-color" onClick={() => solveTreeClicked(props.jsonTree)}>Reši binarno drevo</MDBBtn>
             </div>
             <div style={{ display: "flex", justifyContent: "center" }}>
                 <Sketch setup={setup} draw={draw} />
