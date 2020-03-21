@@ -15,21 +15,22 @@ interface Props {
 export default (props: Props) => {
 
     const calcMethods : any = {
-        '+': (left: number, right: number) => (left + right),
-        '-': (left: number, right: number) => (left - right),
-        '/': (left: number, right: number) => (left / right),
-        '*': (left: number, right: number) => (left * right),
-        '^': (left: number, right: number) => (left ^ right)
+        '+': (left: number, right: number): number => (left + right),
+        '-': (left: number, right: number): number => (left - right),
+        '/': (left: number, right: number): number => (left / right),
+        '*': (left: number, right: number): number => (left * right),
+        '^': (left: number, right: number): number => (left ^ right)
     }
 
-    function recursiveTreeSolve(tree: any):  number {
+    function recursiveTreeSolve(tree: treeStructure):  any {
         const leftC = tree?.left;
         const rightC = tree?.right;
         const dataC = tree?.value;
 
         if (leftC && rightC) {
-            console.log("has both left and right");
-            return calcMethods[tree.value](recursiveTreeSolve(leftC), recursiveTreeSolve(rightC));
+            tree.value = calcMethods[dataC](recursiveTreeSolve(leftC), recursiveTreeSolve(rightC));
+            console.log(`Execute calculate with operator: ${dataC}; values: ${leftC?.value} & ${rightC?.value}`);
+            return Number(tree.value);
         } else {
             return Number(dataC);
         }
