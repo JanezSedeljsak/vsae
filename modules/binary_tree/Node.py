@@ -1,14 +1,11 @@
 class Index:
-    def __init__(self, value):
-        self.left = None
+    def __init__(self, value, left=None, right=None):
+        self.left = left
         self.data = value
-        self.right = None
+        self.right = right
 
     def toString(self):
         expression = ""
-
-
-
 
     def postorder(self):
 

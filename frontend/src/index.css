@@ -54,3 +54,15 @@ nav {
     cursor: pointer;
     color: #444 !important;
 }
+
+.modal-header {
+    background-color: #0099ff !important;
+    color: #eee !important;
+}
+
+.list-group-item {
+    background-color: transparent !important;
+    color: #444 !important;
+    border: none !important;
+    border-bottom: 1px solid #4444445d !important;
+}

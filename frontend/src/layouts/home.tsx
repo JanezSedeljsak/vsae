@@ -2,20 +2,29 @@ import React, { useState } from "react";
 import { MDBInput, MDBBtn } from "mdbreact";
 import api from './../helpers/api';
 import BinaryTree from './binarytree';
+import sleep from './../helpers/sleep';
+import treeStructure from './../interfaces/tree';
 
 export default () => {
-    const [expression, setExpression] = useState('');
-    const [treeForDisplay, setTreeForDisplay] = useState(undefined);
+    const [expression, setExpression] = useState<string>('');
+    const [treeForDisplay, setTreeForDisplay] = useState<treeStructure | undefined>(undefined);
 
     function validateExpression(str: string): boolean {
-        return true
+        return true;
     }
 
-    const displayTree = async () => {
+    const displayTree = async () : Promise<void> => {
+
+        // force to re-render binary-tree component
+        if (treeForDisplay) { 
+            setTreeForDisplay(undefined);
+            await sleep(500);
+        }
+        
         const response : any = await api.buildJsonTree(expression);
-        setTreeForDisplay(response.data.result);
-        console.log(response.data.result);
+        await setTreeForDisplay(response.data.result);
     }
+
 
     return (
         <>
@@ -32,7 +41,7 @@ export default () => {
             </MDBBtn>
             <MDBBtn color="primary" disabled={!validateExpression(expression)}>Shunting-yard algoritem</MDBBtn>
             <hr />
-            {treeForDisplay && <BinaryTree jsonTree={treeForDisplay} />}
+            {treeForDisplay && <BinaryTree initExpression={expression} jsonTree={treeForDisplay} />}
         </>
     );
 };
