@@ -2,12 +2,12 @@ from modules.binary_tree.Node import Index as Node
 
 
 def is_greater_precedence(op1, op2):
-    pre = {'+': 0, '-': 0, '*': 1, '/': 1, '^': 2}
+    pre = {'+': 0, '-': 0, '*': 1, '/': 1, '^': 2, 'f': 2}
     return pre[op1] >= pre[op2]
 
 
 def associativity(op):
-    ass = {'+': 0, '-': 0, '*': 0, '/': 0, '^': 1}
+    ass = {'+': 0, '-': 0, '*': 0, '/': 0, '^': 1, 'f': 1}
     return ass[op]
 
 
@@ -16,11 +16,11 @@ def Index(exp):
     stack = []
     tree_stack = []
     for i in exp_list:
-        if i not in ['+', '-', '*', '/', '^', '(', ')']:
-            t = Node(int(i))
+        if i not in ['+', '-', '*', '/', '^', '(', ')', 'f']:
+            t = Node(str(i))
             tree_stack.append(t)
 
-        elif i in ['+', '-', '*', '/', '^']:
+        elif i in ['+', '-', '*', '/', '^', 'f']:
             if not stack or stack[-1] == '(':
                 stack.append(i)
 

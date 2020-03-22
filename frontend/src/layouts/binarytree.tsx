@@ -31,22 +31,23 @@ export default (props: Props) => {
                     <MDBListGroupItem active href="#">
                         <div className="d-flex w-100 justify-content-between">
                             <h5 className="mb-1">
-                                <MDBIcon icon="info-circle" />
+                                <MDBIcon icon="th" />
                                 {" Začetni račun: "}
                                 <b>{props.initExpression}</b>
                                 <p className="mb-1">
+                                    <MDBIcon icon="stop" />
                                     {" Končna vrednost: "}
                                     <b>{jsonTree?.value}</b>
                                 </p>
                             </h5>
                         </div>
                     </MDBListGroupItem>
-                    {solvingSteps.map(step => (
-                        <MDBListGroupItem active href="#">
+                    {solvingSteps.map((item, index) => (
+                        <MDBListGroupItem active href="#" key={index}>
                             <div className="d-flex w-100 justify-content-between">
-                                <h5 className="mb-1"><MDBIcon icon="info-circle" />{" Korak: "}{step.id + 1}</h5>
+                                <h5 className="mb-1"><MDBIcon icon="info-circle" />{" Korak: "}{item.id + 1}</h5>
                             </div>
-                            <p className="mb-1">{step.step}</p>
+                            <p className="mb-1" dangerouslySetInnerHTML={{ __html: item.step }}/>
                             <small>Vmesni račun: {"/"}</small>
                         </MDBListGroupItem>
                     ))}
@@ -61,26 +62,43 @@ export default (props: Props) => {
         jsonTree = props.jsonTree;
     }, []);
 
-    const calcMethods: any = {
-        '+': (left: number, right: number): number => (left + right),
-        '-': (left: number, right: number): number => (left - right),
-        '/': (left: number, right: number): number => (left / right),
-        '*': (left: number, right: number): number => (left * right),
-        '^': (left: number, right: number): number => (left ^ right)
+    const funcOperators : any = {
+        'abs': Math.abs,
+        'cos': Math.cos,
+        'sin': Math.sin,
+        'tan': Math.tan,
+        'ln': Math.exp,
+        'log': Math.log10
     };
 
-    async function recursiveTreeSolve(tree: treeStructure | undefined): Promise<number> {
+    const calcMethods: any = {
+        '+': (left: string, right: string): number => (Number(left) + Number(right)),
+        '-': (left: string, right: string): number => (Number(left) - Number(right)),
+        '/': (left: string, right: string): number => (Number(left) / Number(right)),
+        '*': (left: string, right: string): number => (Number(left) * Number(right)),
+        '^': (left: string, right: string): number => Math.pow(Number(left), Number(right)),
+        'f': (left: string, right: string): number => (right in funcOperators) ? 
+            funcOperators[right](Number(left)) : Number(left)
+    };
+
+    async function recursiveTreeSolve(tree: treeStructure | undefined): Promise<number | string> {
         if (tree?.left && tree?.right) {
             const operation = tree?.value;
             tree.value = calcMethods[operation](await recursiveTreeSolve(tree?.left), await recursiveTreeSolve(tree?.right));
-            const step = `Izvrščimo operacijo: ${operation} nad vrednostima: ${tree.left.value} & ${tree.right.value}`;
+            const step = (operation !== 'f') ? (
+                `Izvrščimo operacijo: ${operation} nad vrednostima: 
+                ${tree.left.value} & ${tree.right.value}<br/><b>(${tree.left.value} ${operation} ${tree.right.value}) = ${tree.value}</b>`
+            ) : (
+                `Izvršimo funkcijo: ${tree.right.value} nad vrednostjo: 
+                ${tree.left.value}<br/><b>${tree.right.value}(${tree.left.value}) = ${tree.value}</b>`
+            );
             solvingSteps.push({ id: solvingSteps.length, step });
             tree.left = null;
             tree.right = null;
             await sleep(400);
-            return Number(tree.value);
+            return String(tree.value);
         } else {
-            return Number(tree?.value);
+            return String(tree?.value);
         }
     }
 
@@ -189,7 +207,6 @@ export default (props: Props) => {
     return (
         <>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-
                 {renderActionButtons()}
                 <MDBModal isOpen={modal} toggle={() => setModal(!modal)} size="lg">
                     <MDBModalHeader toggle={() => setModal(!modal)}>
