@@ -11,15 +11,16 @@ interface treeStructure {
 interface Props {
     jsonTree: treeStructure | undefined
 }
+ 
+var jsonTree : treeStructure | undefined; // global variable for tree printing
 
 export default (props: Props) => {
 
     const [isSolving, setIsSolving] = useState(false);
     const [isDrawing, setIsDrawing] = useState(true);
-    const [jsonTree, setJsonTree] = useState<treeStructure | any>(undefined);
 
     useEffect(() => {
-        setJsonTree(props.jsonTree);
+        jsonTree = props.jsonTree;
     }, [])
 
     const calcMethods: any = {
@@ -30,24 +31,24 @@ export default (props: Props) => {
         '^': (left: number, right: number): number => (left ^ right)
     };
 
-    async function recursiveTreeSolve(tree: treeStructure): Promise<treeStructure | number> {
-        await sleep(500);
-
-        const leftC = tree?.left;
-        const rightC = tree?.right;
-        const dataC = (tree?.value);
-
-        if (leftC && rightC) {
-            return calcMethods[dataC](await recursiveTreeSolve(leftC), await recursiveTreeSolve(rightC));
+    async function recursiveTreeSolve(tree: treeStructure | undefined): Promise<number> {
+        if (tree?.left && tree?.right) {
+            tree.value = calcMethods[tree?.value](await recursiveTreeSolve(tree?.left), await recursiveTreeSolve(tree?.right));
+            console.log(`execute calc with ${tree?.value}, on: ${tree.left.value} & ${tree.right.value}`);
+            tree.left = null;
+            tree.right = null;
+            await sleep(400);
+            return Number(tree.value);
         } else {
-            return Number(dataC);
+            return Number(tree?.value);
+            
         }
     }
 
     async function solveTreeClicked() {
         setIsSolving(true);
-        console.log(recursiveTreeSolve(jsonTree));
-        setJsonTree({ value: String(await recursiveTreeSolve(jsonTree)), left: null, right: null });
+        await sleep(400);
+        await recursiveTreeSolve(jsonTree);
     }
 
     function sleep(ms: number): Promise<any> {
