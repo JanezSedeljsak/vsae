@@ -31,7 +31,7 @@ export default () => {
             </MDBBtn>
             <MDBBtn color="primary" disabled={!validateExpression(expression)}>Shunting-yard algoritem</MDBBtn>
             <hr />
-            {treeForDisplay && <BinaryTree jsonTree={treeForDisplay} />}
+            {treeForDisplay && <BinaryTree initExpression={expression} jsonTree={treeForDisplay} />}
         </>
     );
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MDBBtn } from 'mdbreact';
+import { MDBBtn, MDBModal, MDBModalHeader, MDBListGroup, MDBModalBody, MDBListGroupItem, MDBIcon } from 'mdbreact';
 import Sketch from "react-p5";
 
 interface treeStructure {
@@ -9,19 +9,62 @@ interface treeStructure {
 }
 
 interface Props {
-    jsonTree: treeStructure | undefined
+    jsonTree: treeStructure | undefined,
+    initExpression: string | undefined
 }
- 
-var jsonTree : treeStructure | undefined; // global variable for tree printing
+
+interface Step {
+    id: number,
+    step: string
+}
+
+var jsonTree: treeStructure | undefined; // global variable for tree printing
+var solvingSteps: Array<Step> = new Array(); // global variable for solving steps
 
 export default (props: Props) => {
 
-    const [isSolving, setIsSolving] = useState(false);
-    const [isDrawing, setIsDrawing] = useState(true);
+    const [isSolving, setIsSolving] = useState<boolean>(false);
+    const [isDrawing, setIsDrawing] = useState<boolean>(true);
+    const [modal, setModal] = useState<boolean>(false);
+
+
+    function getModalContent() {
+        if (solvingSteps) {
+            return (
+                <MDBListGroup style={{ width: "100%" }}>
+                    <MDBListGroupItem active href="#">
+                        <div className="d-flex w-100 justify-content-between">
+                            <h5 className="mb-1">
+                                <MDBIcon icon="info-circle"/>
+                                {" Začetni račun: "}
+                                <b>{props.initExpression}</b>
+                                <p className="mb-1">
+                                    {" Končna vrednost: "}
+                                    <b>{jsonTree?.value}</b>
+                                </p>
+                            </h5>
+                        </div>
+                    </MDBListGroupItem>
+                    {solvingSteps.map(step => (
+                        <MDBListGroupItem active href="#">
+                            <div className="d-flex w-100 justify-content-between">
+                                <h5 className="mb-1"><MDBIcon icon="info-circle"/>{" Korak: "}{step.id + 1}</h5>
+                            </div>
+                            <p className="mb-1">{step.step}</p>
+                            <small>Vmesni račun: {"/"}</small>
+                        </MDBListGroupItem>
+                    ))}
+                </MDBListGroup>
+            );
+        } else {
+            return <p>Izvršena ni bila nobena operacija...</p>
+        }
+        solvingSteps = [];
+    }
 
     useEffect(() => {
         jsonTree = props.jsonTree;
-    }, [])
+    }, []);
 
     const calcMethods: any = {
         '+': (left: number, right: number): number => (left + right),
@@ -33,15 +76,16 @@ export default (props: Props) => {
 
     async function recursiveTreeSolve(tree: treeStructure | undefined): Promise<number> {
         if (tree?.left && tree?.right) {
-            tree.value = calcMethods[tree?.value](await recursiveTreeSolve(tree?.left), await recursiveTreeSolve(tree?.right));
-            console.log(`execute calc with ${tree?.value}, on: ${tree.left.value} & ${tree.right.value}`);
+            const operation = tree?.value;
+            tree.value = calcMethods[operation](await recursiveTreeSolve(tree?.left), await recursiveTreeSolve(tree?.right));
+            const step = `Izvrščimo operacijo: ${operation} nad vrednostima: ${tree.left.value} & ${tree.right.value}`;
+            solvingSteps.push({ id: solvingSteps.length, step });
             tree.left = null;
             tree.right = null;
             await sleep(400);
             return Number(tree.value);
         } else {
             return Number(tree?.value);
-            
         }
     }
 
@@ -49,6 +93,7 @@ export default (props: Props) => {
         setIsSolving(true);
         await sleep(400);
         await recursiveTreeSolve(jsonTree);
+        setModal(true);
     }
 
     function sleep(ms: number): Promise<any> {
@@ -141,6 +186,14 @@ export default (props: Props) => {
                     disabled={!jsonTree || isDrawing || isSolving}
                     onClick={solveTreeClicked}
                 >Reši binarno drevo</MDBBtn>
+                <MDBModal isOpen={modal} toggle={() => setModal(!modal)} size="lg">
+                    <MDBModalHeader toggle={() => setModal(!modal)}>
+                        <MDBIcon icon="list-ol"/>{" Postopek reševanja"}
+                    </MDBModalHeader>
+                    <MDBModalBody>
+                        {getModalContent()}
+                    </MDBModalBody>
+                </MDBModal>
             </div>
             <div style={{ display: "flex", justifyContent: "center" }}>
                 <Sketch setup={setup} draw={draw} />
