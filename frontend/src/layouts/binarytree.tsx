@@ -66,7 +66,7 @@ export default (props: Props) => {
         '-': (left: number, right: number): number => (left - right),
         '/': (left: number, right: number): number => (left / right),
         '*': (left: number, right: number): number => (left * right),
-        '^': (left: number, right: number): number => (left ^ right)
+        '^': (left: number, right: number): number => Math.pow(left, right)
     };
 
     async function recursiveTreeSolve(tree: treeStructure | undefined): Promise<number> {

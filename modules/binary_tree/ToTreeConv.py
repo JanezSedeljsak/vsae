@@ -17,7 +17,7 @@ def Index(exp):
     tree_stack = []
     for i in exp_list:
         if i not in ['+', '-', '*', '/', '^', '(', ')']:
-            t = Node(int(i))
+            t = Node(float(i))
             tree_stack.append(t)
 
         elif i in ['+', '-', '*', '/', '^']:
