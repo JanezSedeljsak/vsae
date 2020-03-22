@@ -41,8 +41,8 @@ export default (props: Props) => {
                             </h5>
                         </div>
                     </MDBListGroupItem>
-                    {solvingSteps.map(step => (
-                        <MDBListGroupItem active href="#">
+                    {solvingSteps.map((step, index) => (
+                        <MDBListGroupItem active href="#" key={index}>
                             <div className="d-flex w-100 justify-content-between">
                                 <h5 className="mb-1"><MDBIcon icon="info-circle" />{" Korak: "}{step.id + 1}</h5>
                             </div>
@@ -62,25 +62,51 @@ export default (props: Props) => {
     }, []);
 
     const calcMethods: any = {
-        '+': (left: number, right: number): number => (left + right),
-        '-': (left: number, right: number): number => (left - right),
-        '/': (left: number, right: number): number => (left / right),
-        '*': (left: number, right: number): number => (left * right),
-        '^': (left: number, right: number): number => Math.pow(left, right)
+        '+': (left: string, right: string): number => (Number(left) + Number(right)),
+        '-': (left: string, right: string): number => (Number(left) - Number(right)),
+        '/': (left: string, right: string): number => (Number(left) / Number(right)),
+        '*': (left: string, right: string): number => (Number(left) * Number(right)),
+        '^': (left: string, right: string): number => Math.pow(Number(left), Number(right)),
+        'f': (left: string, right: string): number => {
+            console.log(right);
+            const num = Number(left);
+            switch(right) {
+                case 'abs':
+                    return Math.abs(num);
+                case 'cos':
+                    return Math.cos(num);
+                case 'sin':
+                    return Math.sin(num);
+                case 'tan':
+                    return Math.tan(num);
+                case 'ln':
+                    return Math.exp(num);
+                case 'log':
+                    return Math.log10(num);
+                default:
+                    return num;
+            }
+        }
     };
 
-    async function recursiveTreeSolve(tree: treeStructure | undefined): Promise<number> {
+    async function recursiveTreeSolve(tree: treeStructure | undefined): Promise<number | string> {
         if (tree?.left && tree?.right) {
             const operation = tree?.value;
             tree.value = calcMethods[operation](await recursiveTreeSolve(tree?.left), await recursiveTreeSolve(tree?.right));
-            const step = `Izvrščimo operacijo: ${operation} nad vrednostima: ${tree.left.value} & ${tree.right.value}`;
+            const step = (operation !== 'f') ? (
+                `Izvrščimo operacijo: ${operation} nad vrednostima: 
+                ${tree.left.value} & ${tree.right.value} (${tree.left.value} ${operation} ${tree.right.value})`
+            ) : (
+                `Izvršimo funkcijo: ${tree.right.value} nad vrednostjo: 
+                ${tree.left.value} → ${tree.right.value}(${tree.left.value})`
+            );
             solvingSteps.push({ id: solvingSteps.length, step });
             tree.left = null;
             tree.right = null;
             await sleep(400);
-            return Number(tree.value);
+            return String(tree.value);
         } else {
-            return Number(tree?.value);
+            return String(tree?.value);
         }
     }
 

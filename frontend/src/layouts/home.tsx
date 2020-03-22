@@ -39,7 +39,6 @@ export default () => {
             >
                 Prikaži binarno drevo
             </MDBBtn>
-            <MDBBtn color="primary" disabled={!validateExpression(expression)}>Shunting-yard algoritem</MDBBtn>
             <hr />
             {treeForDisplay && <BinaryTree initExpression={expression} jsonTree={treeForDisplay} />}
         </>
