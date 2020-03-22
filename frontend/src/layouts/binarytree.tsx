@@ -15,8 +15,8 @@ interface Props {
 export default (props: Props) => {
 
     const [isSolving, setIsSolving] = useState(false);
-    const [isDrawing, setIsDrawing] = useState(false);
-    const [jsonTree, setJsonTree] = useState<treeStructure | undefined>(undefined);
+    const [isDrawing, setIsDrawing] = useState(true);
+    const [jsonTree, setJsonTree] = useState<treeStructure | any>(undefined);
 
     useEffect(() => {
         setJsonTree(props.jsonTree);
@@ -31,26 +31,24 @@ export default (props: Props) => {
     };
 
     async function recursiveTreeSolve(tree: any = jsonTree) {
-        // #TODO: recursive tree solving visualization  
-        // console.log(jsonTree);
-        // await sleep(400);
+        //await sleep(400);
 
         const leftC = tree?.left;
         const rightC = tree?.right;
-        const dataC = tree?.value;
+        const dataC = (tree?.value);
 
-        if (leftC && rightC) {
+        if (leftC && rightC && !Object.keys(calcMethods).includes(dataC)) {
             tree.value = calcMethods[dataC](recursiveTreeSolve(leftC), recursiveTreeSolve(rightC));
             console.log(`Execute calculate with operator: ${dataC}; values: ${leftC?.value} & ${rightC?.value}`);
-            return Number(tree.value);
+            return { value: String(tree.value), left: null, right: null };
         } else {
-            return Number(dataC);
+            return { value: "5", left: null, right: null };
         }
     }
 
     async function solveTreeClicked() {
         setIsSolving(true);
-        await recursiveTreeSolve();
+        setJsonTree(await recursiveTreeSolve(jsonTree));
     }
 
     function sleep(ms: number): Promise<any> {
@@ -58,12 +56,12 @@ export default (props: Props) => {
     }
 
 
-    function drawTreeSolving(tree: treeStructure | undefined, p5: any, len: number) {
+    function drawTreeSync(tree: treeStructure | undefined, p5: any, len: number): void {
         if (tree?.left) {
             p5.push();
             p5.line(0, 0, -len, 100);
             p5.translate(-len, 100);
-            drawTree(tree.left, p5, len * .5);
+            drawTreeSync(tree.left, p5, len * .5);
             p5.pop();
         }
 
@@ -71,7 +69,7 @@ export default (props: Props) => {
             p5.push();
             p5.line(0, 0, len, 100);
             p5.translate(len, 100);
-            drawTree(tree.right, p5, len * .5);
+            drawTreeSync(tree.right, p5, len * .5);
             p5.pop();
         }
 
@@ -83,7 +81,7 @@ export default (props: Props) => {
     }
 
     async function drawTree(tree: treeStructure | undefined, p5: any, len: number) {
-        setIsDrawing(true);
+        p5.noLoop();
         await sleep(500);
 
         Promise.all([
@@ -112,9 +110,6 @@ export default (props: Props) => {
         p5.strokeWeight(2);
         p5.textSize(40);
         p5.text(tree?.value, -12, 15);
-
-        setTimeout(() => setIsDrawing(false), 1000);
-
     }
 
     function setup(p5: any, canvasRef: any): void {
@@ -123,16 +118,18 @@ export default (props: Props) => {
         p5.stroke(60);
     }
 
-    function draw(p5: any): void {
-        if (jsonTree) {
+    async function draw(p5: any) {
+        if (isDrawing) {
             p5.translate(900, 40);
-            if (!isSolving) {
-                p5.noLoop();
-                drawTree(jsonTree, p5, 350);
-            } else {
-                p5.loop();
-                drawTreeSolving(jsonTree, p5, 350);
-            }
+            await drawTree(jsonTree, p5, 350);
+            await sleep(500);
+            setIsDrawing(false);
+            p5.loop();
+        } else {
+            p5.translate(900, 40);
+            p5.clear();
+            p5.loop();
+            drawTreeSync(jsonTree, p5, 350);
         }
     }
 
