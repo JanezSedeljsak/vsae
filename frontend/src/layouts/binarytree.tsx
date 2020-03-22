@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { MDBBtn, MDBModal, MDBModalHeader, MDBListGroup, MDBModalBody, MDBListGroupItem, MDBIcon } from 'mdbreact';
 import Sketch from "react-p5";
-
-interface treeStructure {
-    value: string,
-    left: treeStructure | null,
-    right: treeStructure | null
-}
+import sleep from './../helpers/sleep';
+import treeStructure from './../interfaces/tree';
 
 interface Props {
     jsonTree: treeStructure | undefined,
@@ -23,7 +19,7 @@ var solvingSteps: Array<Step> = new Array(); // global variable for solving step
 
 export default (props: Props) => {
 
-    const [isSolving, setIsSolving] = useState<boolean>(false);
+    const [isSolving, setIsSolving] = useState<boolean | number>(false);
     const [isDrawing, setIsDrawing] = useState<boolean>(true);
     const [modal, setModal] = useState<boolean>(false);
 
@@ -35,7 +31,7 @@ export default (props: Props) => {
                     <MDBListGroupItem active href="#">
                         <div className="d-flex w-100 justify-content-between">
                             <h5 className="mb-1">
-                                <MDBIcon icon="info-circle"/>
+                                <MDBIcon icon="info-circle" />
                                 {" Začetni račun: "}
                                 <b>{props.initExpression}</b>
                                 <p className="mb-1">
@@ -48,7 +44,7 @@ export default (props: Props) => {
                     {solvingSteps.map(step => (
                         <MDBListGroupItem active href="#">
                             <div className="d-flex w-100 justify-content-between">
-                                <h5 className="mb-1"><MDBIcon icon="info-circle"/>{" Korak: "}{step.id + 1}</h5>
+                                <h5 className="mb-1"><MDBIcon icon="info-circle" />{" Korak: "}{step.id + 1}</h5>
                             </div>
                             <p className="mb-1">{step.step}</p>
                             <small>Vmesni račun: {"/"}</small>
@@ -59,7 +55,6 @@ export default (props: Props) => {
         } else {
             return <p>Izvršena ni bila nobena operacija...</p>
         }
-        solvingSteps = [];
     }
 
     useEffect(() => {
@@ -94,10 +89,7 @@ export default (props: Props) => {
         await sleep(400);
         await recursiveTreeSolve(jsonTree);
         setModal(true);
-    }
-
-    function sleep(ms: number): Promise<any> {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        setIsSolving(0);
     }
 
 
@@ -178,17 +170,30 @@ export default (props: Props) => {
         }
     }
 
+    function renderActionButtons() {
+        return (typeof isSolving === typeof 0) ? (
+            <MDBBtn
+                color="mdb-color"
+                disabled={modal}
+                onClick={() => setModal(true)}
+            >Prikaži korake reševanja</MDBBtn>
+        ) : (
+            <MDBBtn
+                color="mdb-color"
+                disabled={!jsonTree || isDrawing || !!isSolving}
+                onClick={solveTreeClicked}
+            >Reši binarno drevo</MDBBtn>
+        );
+    }
+
     return (
         <>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <MDBBtn
-                    color="mdb-color"
-                    disabled={!jsonTree || isDrawing || isSolving}
-                    onClick={solveTreeClicked}
-                >Reši binarno drevo</MDBBtn>
+
+                {renderActionButtons()}
                 <MDBModal isOpen={modal} toggle={() => setModal(!modal)} size="lg">
                     <MDBModalHeader toggle={() => setModal(!modal)}>
-                        <MDBIcon icon="list-ol"/>{" Postopek reševanja"}
+                        <MDBIcon icon="list-ol" />{" Postopek reševanja"}
                     </MDBModalHeader>
                     <MDBModalBody>
                         {getModalContent()}
