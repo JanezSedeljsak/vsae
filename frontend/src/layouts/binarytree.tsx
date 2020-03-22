@@ -30,25 +30,24 @@ export default (props: Props) => {
         '^': (left: number, right: number): number => (left ^ right)
     };
 
-    async function recursiveTreeSolve(tree: any = jsonTree) {
-        //await sleep(400);
+    async function recursiveTreeSolve(tree: treeStructure): Promise<treeStructure | number> {
+        await sleep(500);
 
         const leftC = tree?.left;
         const rightC = tree?.right;
         const dataC = (tree?.value);
 
-        if (leftC && rightC && !Object.keys(calcMethods).includes(dataC)) {
-            tree.value = calcMethods[dataC](recursiveTreeSolve(leftC), recursiveTreeSolve(rightC));
-            console.log(`Execute calculate with operator: ${dataC}; values: ${leftC?.value} & ${rightC?.value}`);
-            return { value: String(tree.value), left: null, right: null };
+        if (leftC && rightC) {
+            return calcMethods[dataC](await recursiveTreeSolve(leftC), await recursiveTreeSolve(rightC));
         } else {
-            return { value: "5", left: null, right: null };
+            return Number(dataC);
         }
     }
 
     async function solveTreeClicked() {
         setIsSolving(true);
-        setJsonTree(await recursiveTreeSolve(jsonTree));
+        console.log(recursiveTreeSolve(jsonTree));
+        setJsonTree({ value: String(await recursiveTreeSolve(jsonTree)), left: null, right: null });
     }
 
     function sleep(ms: number): Promise<any> {
