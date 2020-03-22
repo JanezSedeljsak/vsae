@@ -47,8 +47,7 @@ export default (props: Props) => {
                             <div className="d-flex w-100 justify-content-between">
                                 <h5 className="mb-1"><MDBIcon icon="info-circle" />{" Korak: "}{item.id + 1}</h5>
                             </div>
-                            <p className="mb-1" dangerouslySetInnerHTML={{ __html: item.step }}/>
-                            <small>Vmesni račun: {"/"}</small>
+                            <p className="mb-1" dangerouslySetInnerHTML={{ __html: item.step }} />
                         </MDBListGroupItem>
                     ))}
                 </MDBListGroup>
@@ -56,20 +55,24 @@ export default (props: Props) => {
         } else {
             return <p>Izvršena ni bila nobena operacija...</p>
         }
+
+
     }
 
     useEffect(() => {
         jsonTree = props.jsonTree;
     }, []);
 
-    const funcOperators : any = {
-        'abs': Math.abs,
-        'cos': Math.cos,
-        'sin': Math.sin,
-        'tan': Math.tan,
+    const funcOperators: any = {
+        'cos': (num: number): number => Math.cos(degToRad(num)),
+        'sin': (num: number): number => Math.sin(degToRad(num)),
+        'tan': (num: number): number => Math.tan(degToRad(num)),
+        'log': Math.log10,
         'ln': Math.exp,
-        'log': Math.log10
+        'abs': Math.abs
     };
+
+    const degToRad = (deg: number): number => (deg * (Math.PI / 180));
 
     const calcMethods: any = {
         '+': (left: string, right: string): number => (Number(left) + Number(right)),
@@ -77,7 +80,7 @@ export default (props: Props) => {
         '/': (left: string, right: string): number => (Number(left) / Number(right)),
         '*': (left: string, right: string): number => (Number(left) * Number(right)),
         '^': (left: string, right: string): number => Math.pow(Number(left), Number(right)),
-        'f': (left: string, right: string): number => (right in funcOperators) ? 
+        'f': (left: string, right: string): number => (right in funcOperators) ?
             funcOperators[right](Number(left)) : Number(left)
     };
 
@@ -86,12 +89,12 @@ export default (props: Props) => {
             const operation = tree?.value;
             tree.value = calcMethods[operation](await recursiveTreeSolve(tree?.left), await recursiveTreeSolve(tree?.right));
             const step = (operation !== 'f') ? (
-                `Izvrščimo operacijo: ${operation} nad vrednostima: 
+                `Izvršimo operacijo: ${operation} nad vrednostima: 
                 ${tree.left.value} & ${tree.right.value}<br/><b>(${tree.left.value} ${operation} ${tree.right.value}) = ${tree.value}</b>`
             ) : (
-                `Izvršimo funkcijo: ${tree.right.value} nad vrednostjo: 
+                    `Izvršimo funkcijo: ${tree.right.value} nad vrednostjo: 
                 ${tree.left.value}<br/><b>${tree.right.value}(${tree.left.value}) = ${tree.value}</b>`
-            );
+                );
             solvingSteps.push({ id: solvingSteps.length, step });
             tree.left = null;
             tree.right = null;
@@ -103,6 +106,7 @@ export default (props: Props) => {
     }
 
     async function solveTreeClicked() {
+        solvingSteps = new Array();
         setIsSolving(true);
         await sleep(400);
         await recursiveTreeSolve(jsonTree);
@@ -196,12 +200,12 @@ export default (props: Props) => {
                 onClick={() => setModal(true)}
             >Prikaži korake reševanja</MDBBtn>
         ) : (
-            <MDBBtn
-                color="mdb-color"
-                disabled={!jsonTree || isDrawing || !!isSolving}
-                onClick={solveTreeClicked}
-            >Reši binarno drevo</MDBBtn>
-        );
+                <MDBBtn
+                    color="mdb-color"
+                    disabled={!jsonTree || isDrawing || !!isSolving}
+                    onClick={solveTreeClicked}
+                >Reši binarno drevo</MDBBtn>
+            );
     }
 
     return (
