@@ -14,7 +14,6 @@ export default () => {
     const displayTree = async () => {
         const response : any = await api.buildJsonTree(expression);
         setTreeForDisplay(response.data.result);
-        console.log(response.data.result);
     }
 
     return (
