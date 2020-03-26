@@ -1,5 +1,5 @@
 from flask import Flask, send_from_directory, request, jsonify
-from modules.core.HelperMethods import ServerMethods
+from modules.core.HelperMethods import ServerMethods, EquationFormating
 from flask_cors import CORS
 import os
 
@@ -36,7 +36,9 @@ def bjs():
     data = request.json
     expression = data['expression']
 
-    res = treeToJson(buildTreeFromExpression(expression))
+    fExpression = EquationFormating.defFormat(expression)
+
+    res = treeToJson(buildTreeFromExpression(fExpression))
     return ServerMethods.dispatchJSON({'result': res})
 
 # serve react

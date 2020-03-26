@@ -92,9 +92,9 @@ export default (props: Props) => {
                 `Izvršimo operacijo: ${operation} nad vrednostima: 
                 ${tree.left.value} & ${tree.right.value}<br/><b>(${tree.left.value} ${operation} ${tree.right.value}) = ${tree.value}</b>`
             ) : (
-                    `Izvršimo funkcijo: ${tree.right.value} nad vrednostjo: 
+                `Izvršimo funkcijo: ${tree.right.value} nad vrednostjo: 
                 ${tree.left.value}<br/><b>${tree.right.value}(${tree.left.value}) = ${tree.value}</b>`
-                );
+            );
             solvingSteps.push({ id: solvingSteps.length, step });
             tree.left = null;
             tree.right = null;
