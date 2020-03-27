@@ -49,12 +49,21 @@ class EquationFormating:
         inbetween = eq[middleIndex:closingIndex+1].strip()
         append = eq[closingIndex+1:].strip()
 
-        return f'{prepend} {inbetween} f {function} {append}'
+        if len(prepend):
+            # EG: -cos(5*4) or -5*(-cos(5*4)/2)
+            if prepend[-1] == '-':
+                prependList = list(prepend)
+                prependList[-1] = '( 0 -'
+                prepend = ''.join(prependList)
+
+                return f'{prepend} ( {inbetween} f {function} ) ) {append}'
+
+        return f'{prepend} ( {inbetween} f {function} ) {append}'
 
     @staticmethod
     def formatFunctionalEquation(eq, checkForFactorial=True):
         funcOperators = ['abs(', 'cos(', 'sin(', 'tan(', 'log(']
-        for i in range(len(eq)-6):
+        for i in range(len(eq)):
             if eq[i:i+4] in funcOperators:
                 eq = EquationFormating.reformatEq(eq, i, i+3, eq[i:i+3])
                 continue    
@@ -72,21 +81,28 @@ class EquationFormating:
         fEq = ''
         mathOperators = ['+', '/', '*', '^']
 
-        for key, el in enumerate(eq.strip()):
+
+        iterList = list(eq.strip())
+        for key, el in enumerate(iterList):
             if el in mathOperators:
                 fEq += f' {el} '
             elif el == '(':
-                fEq += f'( '               
+                fEq += f'( '
             elif el == ')':
-                fEq += f' )'                
-            elif el == '-':               
+                fEq += f' )'
+            elif el == '-':  
                 if key == 0:
-                    fEq += '-'
-                    continue
-                if fEq.strip()[-1] == '(':
-                    fEq += '-'                  
+                    fEq = '-'
+                # EG: 5*( - ( 7 + 4 ) / 2 ) * 9
+                elif eq[key+1:].strip()[0] == '(' and fEq.strip()[-1] == '(':
+                    fEq += '( 0 - '
+                    closingIndex = EquationFormating.getClosingBracket(eq, key)
+                    iterList[closingIndex] = ' ) )'
                 else:
-                    fEq += ' - '            
+                    if fEq.strip()[-1] == '(':
+                        fEq += '-'
+                    else:
+                        fEq += ' - '     
             elif el != ' ':
                 fEq += el
         
