@@ -3,50 +3,67 @@ import { MDBBtn, MDBModal, MDBModalHeader, MDBListGroup, MDBModalBody, MDBListGr
 import Sketch from "react-p5";
 import sleep from './../helpers/sleep';
 import treeStructure from './../interfaces/tree';
+import hexagon from './../resources/hexagon.png';
 
 interface Props {
     jsonTree: treeStructure | undefined,
 }
 
 export default (props: Props) => {
-    const [jsonTree,] = useState<treeStructure | undefined>(props.jsonTree)
+    const [jsonTree,] = useState<treeStructure | undefined>(props.jsonTree);
+
+    function hexagon(s:any, p5:any) {
+        p5.noStroke();
+        p5.fill('#45526e');
+        p5.push();
+        p5.scale(s);
+        p5.beginShape();
+        p5.vertex(-75, -130);
+        p5.vertex(75, -130);
+        p5.vertex(150, 0);
+        p5.vertex(75, 130);
+        p5.vertex(-75, 130);
+        p5.vertex(-150, 0);
+        p5.endShape(p5.close);
+        p5.pop();
+    }
 
     function drawTree(tree: any, p5: any, len: number): void {
         if (tree?.left && tree?.right) {
+            p5.stroke(60);
             p5.push();
             p5.line(0, 0, -len, 100);
             p5.translate(-len, 100);
-            drawTree(tree.left, p5, len * .5);
+            drawTree(tree.left, p5, len * .51);
             p5.pop();
             p5.push();
             p5.line(0, 0, len, 100);
             p5.translate(len, 100);
-            drawTree(tree.right, p5, len * .5);
+            drawTree(tree.right, p5, len * .51);
             p5.pop();
+            p5.noStroke();
         }
 
-        p5.strokeWeight(0);
-        p5.ellipse(0, 0, 60, 60);
-        p5.strokeWeight(2);
-        p5.textSize(30);
+        hexagon(.22,p5);
+        p5.fill('#eee');
         if (tree?.value.length <= 2) {
-            p5.text(tree?.value, -10, 15);
+            p5.text(tree?.value, -10, 10);
         } else {
             let printOut = tree?.value.length == 3 ? tree?.value : tree?.value.substr(0,3) + '...'
-            p5.text(printOut, -20, 15);
+            p5.text(printOut, -16, 10);
         }
- 
     }
 
     function setup(p5: any, canvasRef: any): void {
         p5.createCanvas(1800, 700).parent(canvasRef);
-        p5.textFont('Georgia');
+        p5.textSize(20);
+        p5.textFont('Roboto Mono');
         p5.stroke(60);
     }
 
     function draw(p5: any) {
         p5.translate(900, 40);
-        drawTree(jsonTree, p5, 300);
+        drawTree(jsonTree, p5, 350);
     }
 
     return (
