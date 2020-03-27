@@ -5,7 +5,7 @@ import os
 
 # import modules for binary tree parsing
 from modules.binary_tree.ToTreeConv import Index as buildTreeFromExpression
-from modules.binary_tree.TreeEvaluation import Index as binaryTreeEvaluation
+from modules.binary_tree.TreeEvaluation import Evaulute
 from modules.binary_tree.TreeToJson import Index as treeToJson
 
 # import modules for shunting yard algorithm
@@ -20,8 +20,8 @@ def bte():
     data = request.json
     expression = data['expression']
     
-    res = "{0}".format(binaryTreeEvaluation(buildTreeFromExpression(expression)))
-    return ServerMethods.dispatchJSON({'result': res})
+    #res = "{0}".format(binaryTreeEvaluation(buildTreeFromExpression(expression)))
+    #return ServerMethods.dispatchJSON({'result': res})
 
 @app.route('/api/sye', methods=['POST']) # shunting yard algorithm
 def sye():
@@ -37,6 +37,8 @@ def bjs():
     expression = data['expression']
 
     fExpression = EquationFormating.defFormat(expression)
+
+    sTree = Evaulute(buildTreeFromExpression(fExpression), expression)
 
     res = treeToJson(buildTreeFromExpression(fExpression))
     return ServerMethods.dispatchJSON({'result': res})
