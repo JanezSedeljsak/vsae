@@ -1,5 +1,5 @@
 from modules.binary_tree.Node import Index as Node
-
+import uuid
 
 def is_greater_precedence(op1, op2):
     pre = {'+': 0, '-': 0, '*': 1, '/': 1, '^': 2, 'f': 2}
@@ -35,6 +35,7 @@ def Index(exp):
                     t2 = tree_stack.pop()
                     t.right = t1
                     t.left = t2
+                    t.ident = uuid.uuid4()
                     tree_stack.append(t)
                 stack.append(i)
 
@@ -49,6 +50,7 @@ def Index(exp):
                 t2 = tree_stack.pop()
                 t.right = t1
                 t.left = t2
+                t.ident = uuid.uuid4()
                 tree_stack.append(t)
             stack.pop()
     while stack:
@@ -58,6 +60,7 @@ def Index(exp):
         t2 = tree_stack.pop()
         t.right = t1
         t.left = t2
+        t.ident = uuid.uuid4()
         tree_stack.append(t)
 
     t = tree_stack.pop()

@@ -38,7 +38,7 @@ def bjs():
 
     fExpression = EquationFormating.defFormat(expression)
 
-    sTree = Evaulute(buildTreeFromExpression(fExpression), expression)
+    sTree = Evaulute(buildTreeFromExpression(fExpression), expression, fExpression)._getSelf()
 
     res = treeToJson(buildTreeFromExpression(fExpression))
     return ServerMethods.dispatchJSON({'result': res})

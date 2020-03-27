@@ -9,13 +9,26 @@ class Evaulute:
     steps = []
     base = {}
 
-    def __init__(self, tree, initialEq, buildForDrawing=True):
+    def __init__(self, tree, initialEq, VSAEExpression, buildForDrawing=True):
         self.primaryTree = tree
-        self.steps = []
+        self.steps = [Evaulute._genStep(self.primaryTree)]
+        evaluation = self.evaluate(self.primaryTree)
+
+        updatedSteps = [{
+            'left': step['left'],
+            'right': step['right'],
+            'result': step['val'],
+            'operation': step['oper'],
+            'tree': Evaulute._buildWithoutBrach(
+                step['primaryTree'], step['cTree'].ident, step['val']
+            ) if key != 0 else step['primaryTree']
+        } for key, step in enumerate(self.steps)]
+
         self.base = {
             'equation': initialEq,
-            'result': self.evaluate(self.primaryTree),
-            'steps': self.steps,
+            'VSAEExpression': VSAEExpression,
+            'result': evaluation,
+            'steps': updatedSteps,
         }
 
         if buildForDrawing:
@@ -33,15 +46,30 @@ class Evaulute:
             right = self.evaluate(tree.right)
             operation = tree.data
             val = VSAEMath._baseMathOperation(operation, left, right)
-            self.addStep({
-                'left': left,
-                'right': right,
-                'oper': operation,
-                'val': val,
-                'primaryTree': self.primaryTree,
-                'cTree': tree
-            })
+            self.addStep(Evaulute._genStep(self.primaryTree, left, right, operation, val, tree))
             return val
 
         else:
             return tree.data
+
+    @staticmethod
+    def _genStep(_primaryTree, _left=None, _right=None, _oper=None, _val=None, _cTree=None):
+        return {
+            'left': _left,
+            'right': _right,
+            'oper': _oper,
+            'val': _val,
+            'primaryTree': _primaryTree,
+            'cTree': _cTree
+        }
+
+
+    @staticmethod
+    def _buildWithoutBrach(tree, id, newVal):
+        tree = Node(
+            tree.data,
+            Evaulute._buildWithoutBrach(tree.left, id, newVal) if tree.left else None,
+            Evaulute._buildWithoutBrach(tree.right, id, newVal) if tree.right else None
+        ) if tree.ident != id else Node(newVal, None, None)
+
+        return tree
