@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import sleep from './sleep';
+import api from './api';
 
 export const useUpload = (callOut: any) => {
     const [loading, setLoading] = useState(false);
@@ -17,9 +18,11 @@ export const useUpload = (callOut: any) => {
                 setLoading(true);
                 const file = input.files[0];
                 reader.addEventListener("load", async function () {
-                    await sleep(1000);
+                    const encodedImage: any = reader.result;
+                    const response: any = await api.imgToText(encodedImage);
+                    await sleep(500);
+                    setData({ responseEquation: response.data.equation });
                     setLoading(false);
-                    setData({ path: reader.result });
                 }, false);
 
                 if (file) {

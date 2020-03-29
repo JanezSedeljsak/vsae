@@ -16,9 +16,8 @@ export default () => {
     const [fileupload, setFileUpload] = useState<number>(0);
     const { data, fileIsUplading } = useUpload(fileupload);
 
-    useEffect(() => {
-        setLoading(!!fileIsUplading);
-    }, [fileIsUplading])
+    useEffect(() => setLoading(!!fileIsUplading), [fileIsUplading]);
+    useEffect(() => data?.responseEquation && setExpression(data?.responseEquation), [data])
 
     const displayTree = async (): Promise<void> => {
         if (!expression) return;
@@ -174,7 +173,7 @@ export default () => {
                     <MDBIcon icon="upload" />
                 </MDBBtn>
                 <MDBBtn gradient="blue" onClick={displayTree} style={{ borderRadius: '50%', width: '80px'}}>
-                    <MDBIcon icon="tree" />
+                    <MDBIcon icon="equals" />
                 </MDBBtn>
             </div>
             <div>

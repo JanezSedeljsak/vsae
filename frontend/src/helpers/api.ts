@@ -14,4 +14,17 @@ export default class {
                 .catch(reject);
         })
     }
+
+
+    static imgToText = (encodedImage: string) : Promise<Object> => {
+        return new Promise(async(resolve, reject) => {
+            await axios.post(`${API_URI}/api/tfi`, JSON.stringify({ encodedImage }), {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then(resolve)
+                .catch(reject);
+        })
+    }
 }
