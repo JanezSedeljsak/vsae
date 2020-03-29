@@ -11,7 +11,7 @@ except ImportError:
     except ImportError:
         print("cant import import modules")
 
-pytesseract.pytesseract.tesseract_cmd = '/app/.apt/usr/share/tesseract-ocr/tessdata'
+#pytesseract.pytesseract.tesseract_cmd = '/app/.apt/usr/share/tesseract-ocr/tessdata'
 #pytesseract.pytesseract.tesseract_cmd = 'C:/Tesseract-OCR/tesseract.exe'
 
 class ImgToText:
