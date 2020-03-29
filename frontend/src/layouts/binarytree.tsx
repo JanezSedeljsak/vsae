@@ -3,14 +3,12 @@ import Sketch from "react-p5";
 import sleep from './../helpers/sleep';
 import treeStructure from './../interfaces/tree';
 
-interface Props {
-    jsonTree: treeStructure | undefined,
-}
+interface Props { treeForBuild: treeStructure | undefined }
 
-export default (props: Props) => {
+export default ({ treeForBuild }: Props) => {
 
-    const [jsonTree, setJsonTree] = useState<treeStructure | undefined>(props.jsonTree);
-    useEffect(() => setJsonTree(props.jsonTree), [props.jsonTree])
+    const [jsonTree, setJsonTree] = useState<treeStructure | undefined>(treeForBuild);
+    useEffect(() => setJsonTree(treeForBuild), [treeForBuild])
 
     function hexagon(s:any, p5:any) {
         p5.noStroke();
@@ -50,7 +48,7 @@ export default (props: Props) => {
         if (treeVal.length <= 2) {
             p5.text(treeVal, -10, 10);
         } else {
-            let printOut = treeVal.length == 3 ? treeVal : treeVal.substr(0,3) + '...'
+            let printOut = treeVal.length === 3 ? treeVal : treeVal.substr(0,3) + '...'
             p5.text(printOut, -16, 10);
         }
     }
