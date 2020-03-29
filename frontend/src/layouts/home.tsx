@@ -60,21 +60,22 @@ export default () => {
     }
 
 
-    function stepsModal() {
+    function StepModal() {
         return (
-            <MDBModal isOpen={false} toggle={() => {}} size="lg">
-                <MDBModalHeader toggle={() => {}}>
+            <MDBModal isOpen={modal} toggle={() => setModal(!modal)} size="lg">
+                <MDBModalHeader toggle={() => setModal(!modal)}>
                     <MDBIcon icon="list-ol" />{" Postopek reševanja"}
                 </MDBModalHeader>
                 <MDBModalBody>
-                    <div>neki</div>
+                    <StepsForModal />
                 </MDBModalBody>
             </MDBModal>
         )
     }
 
 
-    function getModalContent() {
+    function StepsForModal() {
+        const { equation, result, steps } = apiBlockOfCode;
         return (
             <MDBListGroup style={{ width: "100%" }}>
                 <MDBListGroupItem active href="#">
@@ -82,15 +83,24 @@ export default () => {
                         <h5 className="mb-1">
                             <MDBIcon icon="th" />
                             {" Začetni račun: "}
-                            <b>{}</b>
+                            <b>{equation}</b>
                             <p className="mb-1">
                                 <MDBIcon icon="stop" />
                                 {" Končna vrednost: "}
-                                <b>{}</b>
+                                <b>{result}</b>
                             </p>
                         </h5>
                     </div>
                 </MDBListGroupItem>
+                {steps.slice(1, steps.length).map((_: any, index: number) => (
+                    <MDBListGroupItem key={index}>
+                        <div key={index} className="d-flex w-100 justify-content-between">
+                            <h5 className="mb-1">
+                                {getStepLabelsAtIndex(index)}
+                            </h5>
+                        </div>
+                    </MDBListGroupItem>
+                ))}
             </MDBListGroup>
         );
     }
@@ -122,31 +132,40 @@ export default () => {
         )
     }
 
-    function SecondPanelRow() {
-        const { left, right, result, operation, isFunction } = apiBlockOfCode.steps[displayIndex+1] || {};
+
+    function getStepLabelsAtIndex(index: number) {
+        const { left, right, result, operation, isFunction } = apiBlockOfCode.steps[index + 1] || {};
         let description;
         let equation;
 
-        if (displayIndex+1 !== apiBlockOfCode.steps.length) {
+        if (displayIndex + 1 !== apiBlockOfCode.steps.length) {
             if (isFunction) {
                 description = `Za naslednjo vrednost ${_nF(left)} izvedemo funkcijo: ${right}`;
                 equation = ((right !== 'fac') ? `${right}(${_nF(left)})` : `${_nF(left)}!`) + ` = ${_nF(result)}`;
-            } 
+            }
             else {
                 description = `Za naslednje vrednosti ${_nF(left)}, ${_nF(right)} izvedemo operacijo: ${operation}`;
                 equation = `${_nF(left)} ${operation} ${_nF(right)} = ${_nF(result)}`;
             }
         }
-        
+
+        return (
+            <>
+                <LabeledHeader {...{ label: 'Korak:', val: (index + 1) || '' }} />
+                <LabeledHeader {...{ label: 'Vmesni korak:', val: description || 'Konec', mathFont: true }} />
+                <LabeledHeader {...{ label: 'Izračun:', val: equation || '/' }} />
+                <LabeledHeader {...{ label: 'Stanje izraza:', val: equation || '/' }} />
+            </>
+        );
+    }
+
+    function SecondPanelRow() {
         return (
             <>
                 <div style={{ width: 'calc(100%-20px)', height: 1, background: '#aaa', margin: 10 }} />
                 <div style={{ display: "flex", flexDirection: 'row', width: '100%' }}>
                     <div style={{ display: "flex", flexDirection: 'column', width: '50%' }}>
-                        <LabeledHeader {...{ label: 'Korak:', val: (displayIndex + 1) || '' }} />
-                        <LabeledHeader {...{ label: 'Vmesni korak:', val: description || 'Konec', mathFont: true }} />
-                        <LabeledHeader {...{ label: 'Izračun:', val: equation|| '/' }} />
-                        <LabeledHeader {...{ label: 'Stanje izraza:', val: equation|| '/' }} />
+                        {getStepLabelsAtIndex(displayIndex)}
                     </div>
                     <div style={{ display: "flex", flexDirection: "row-reverse", width: '50%', padding: 5, paddingBottom: 40 }}>
                         <MDBBtnGroup className="mr-2">
@@ -163,31 +182,32 @@ export default () => {
 
     return (
         <>
+            <StepModal />
             <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: "80px" }}>
                 <MDBInput
                     value={expression}
                     label="Vnesi izraz"
                     onChange={(e: React.FormEvent<HTMLInputElement>) => setExpression(e.currentTarget.value)}
                 />
-                <MDBBtn gradient="aqua" onClick={() => setFileUpload(fileupload + 1)} style={{ borderRadius: '50%', width: '80px'}}>
+                <MDBBtn gradient="aqua" onClick={() => setFileUpload(fileupload + 1)} style={{ borderRadius: '50%', width: '80px' }}>
                     <MDBIcon icon="upload" />
                 </MDBBtn>
-                <MDBBtn gradient="blue" onClick={displayTree} style={{ borderRadius: '50%', width: '80px'}}>
+                <MDBBtn gradient="blue" onClick={displayTree} style={{ borderRadius: '50%', width: '80px' }}>
                     <MDBIcon icon="equals" />
                 </MDBBtn>
             </div>
             <div>
-                {(apiBlockOfCode?.steps?.length && !loading)  ? (
+                {(apiBlockOfCode?.steps?.length && !loading) ? (
                     <MDBAnimation type="bounce" className='panel'>
                         <div style={{ display: "flex", flexDirection: 'column', width: '100%', background: '#ffffff55', padding: '10px' }}>
-                            <TopPanelRow/>
+                            <TopPanelRow />
                             <SecondPanelRow />
                         </div>
                     </MDBAnimation>
-                ) : loading && <Spinner/>}
+                ) : loading && <Spinner />}
                 <hr />
             </div>
-            {(apiBlockOfCode?.steps?.length && !loading) ? <BinaryTree jsonTree={apiBlockOfCode?.steps[displayIndex].tree} />: null}
+            {(apiBlockOfCode?.steps?.length && !loading) ? <BinaryTree jsonTree={apiBlockOfCode?.steps[displayIndex].tree} /> : null}
         </>
     );
 
