@@ -38,10 +38,10 @@ def bjs():
 
     fExpression, baseFormat = EquationFormating.defFormat(expression)
 
-    sTree = Evaulute(buildTreeFromExpression(fExpression), baseFormat, fExpression)._getSelf()
+    res = Evaulute(buildTreeFromExpression(fExpression), baseFormat, fExpression)._getSelf()
 
-    res = treeToJson(buildTreeFromExpression(fExpression))
-    return ServerMethods.dispatchJSON({'result': res, 'base': sTree})
+    #res = treeToJson(buildTreeFromExpression(fExpression))
+    return ServerMethods.dispatchJSON({ 'base': res })
 
 # serve react
 @app.route('/', defaults={'path': ''})

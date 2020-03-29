@@ -18,7 +18,7 @@ class Evaulute:
         updatedTree = self.primaryTree
         for key, step in enumerate(self.steps):
             if key != 0:
-                updatedTree = Evaulute._buildWithoutBrach(updatedTree, step['cTree'].ident, step['val'])
+                updatedTree = Evaulute._buildWithoutBrach(updatedTree, self.steps[key]['cTree'].ident, step['val'])
             updatedSteps.append({
             'left': step['left'],
             'right': step['right'],
@@ -67,10 +67,16 @@ class Evaulute:
 
 
     @staticmethod
-    def _buildWithoutBrach(tree, id, newVal):
-        return Node(
-            tree.data,
-            left=Evaulute._buildWithoutBrach(tree.left, id, newVal) if tree.left else None,
-            right=Evaulute._buildWithoutBrach(tree.right, id, newVal) if tree.right else None,
-            ident=tree.ident
-        ) if tree.ident != id else Node(newVal, left=None, right=None, ident=id)
+    def _buildWithoutBrach(tree, id, newVal, setColor=False):
+        newTree = None
+        if tree.ident != id:
+            newTree = Node(
+                tree.data,
+                left=Evaulute._buildWithoutBrach(tree.left, id, newVal) if tree.left else None,
+                right=Evaulute._buildWithoutBrach(tree.right, id, newVal) if tree.right else None,
+                ident=tree.ident
+            )
+        else:
+            newTree = Node(newVal, left=None, right=None, ident=id)
+
+        return newTree

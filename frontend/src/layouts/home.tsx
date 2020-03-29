@@ -1,21 +1,33 @@
-import React, { useState } from "react";
-import { MDBInput, MDBBtn, MDBIcon, MDBBtnGroup, MDBModal, MDBModalBody, MDBModalHeader, MDBListGroupItem, MDBListGroup } from "mdbreact";
+import React, { useState, useEffect } from "react";
+import { MDBInput, MDBBtn, MDBIcon, MDBBtnGroup, MDBModal, MDBModalBody, MDBModalHeader, MDBAnimation, MDBListGroupItem, MDBListGroup } from "mdbreact";
 import api from './../helpers/api';
 import BinaryTree from './binarytree';
+import { default as Spinner } from './../layouts/loading';
 import sleep from './../helpers/sleep';
-import treeStructure from './../interfaces/tree';
+import { useUpload } from './../helpers/upload';
+
 
 export default () => {
     const [expression, setExpression] = useState<string>('');
     const [modal, setModal] = useState<boolean>(false);
     const [apiBlockOfCode, setApiBlockOfCode] = useState<any>({});
     const [displayIndex, setDisplayIndex] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [fileupload, setFileUpload] = useState<number>(0);
+    const { data, fileIsUplading } = useUpload(fileupload);
+
+    useEffect(() => {
+        setLoading(!!fileIsUplading);
+    }, [fileIsUplading])
 
     const displayTree = async (): Promise<void> => {
         if (!expression) return;
+        setLoading(true);
         const response: any = await api.buildJsonTree(expression);
         setApiBlockOfCode(response.data.base);
         setDisplayIndex(0);
+        await sleep(1000);
+        setLoading(false);
     }
 
     function changeStepIndex(index: number) {
@@ -33,6 +45,7 @@ export default () => {
     }
 
     function _nF(num: any) {
+        if (!num) return '';
         if (Number.parseFloat(num) % 1 !== 0) {
             return Number.parseFloat(num.toString()).toFixed(4);
         } else {
@@ -102,7 +115,6 @@ export default () => {
                 </div>
                 <div style={{ display: "flex", flexDirection: "row-reverse", width: '50%', padding: 5, paddingBottom: 40 }}>
                     <MDBBtnGroup className="mr-2">
-                        <MDBBtn color="mdb-color" onClick={displayTree}>Prikaži binarno drevo</MDBBtn>
                         <MDBBtn color="mdb-color" onClick={() => setModal(true)}><MDBIcon icon="list-ol" /></MDBBtn>
                     </MDBBtnGroup>
                 </div>
@@ -152,25 +164,32 @@ export default () => {
 
     return (
         <>
-            <MDBInput
-                value={expression}
-                label="Vnesi izraz"
-                onChange={(e: React.FormEvent<HTMLInputElement>) => setExpression(e.currentTarget.value)}
-            />
+            <div style={{ display: 'flex', flexDirection: 'row', width: '100%', height: "80px" }}>
+                <MDBInput
+                    value={expression}
+                    label="Vnesi izraz"
+                    onChange={(e: React.FormEvent<HTMLInputElement>) => setExpression(e.currentTarget.value)}
+                />
+                <MDBBtn gradient="aqua" onClick={() => setFileUpload(fileupload + 1)} style={{ borderRadius: '50%', width: '80px'}}>
+                    <MDBIcon icon="upload" />
+                </MDBBtn>
+                <MDBBtn gradient="blue" onClick={displayTree} style={{ borderRadius: '50%', width: '80px'}}>
+                    <MDBIcon icon="tree" />
+                </MDBBtn>
+            </div>
             <div>
-                {(apiBlockOfCode?.steps?.length) ? (
-                    <div style={{ display: "flex", flexDirection: 'column', width: '100%', background: '#ffffff55', padding: '10px' }}>
-                        <TopPanelRow/>
-                        <SecondPanelRow />
-                    </div> 
-                ) : (
-                    <div style={{ display: 'flex', flexDirection: "row-reverse" }}>
-                        <MDBBtn color="mdb-color" onClick={displayTree}>Prikaži binarno drevo</MDBBtn>
-                    </div>
-                )}
+                {(apiBlockOfCode?.steps?.length && !loading)  ? (
+                    <MDBAnimation type="bounce" className='panel'>
+                        <div style={{ display: "flex", flexDirection: 'column', width: '100%', background: '#ffffff55', padding: '10px' }}>
+                            <TopPanelRow/>
+                            <SecondPanelRow />
+                        </div>
+                    </MDBAnimation>
+                ) : loading && <Spinner/>}
                 <hr />
             </div>
-            {apiBlockOfCode?.steps?.length ? <BinaryTree jsonTree={apiBlockOfCode?.steps[displayIndex].tree} />: null}
+            {(apiBlockOfCode?.steps?.length && !loading) ? <BinaryTree jsonTree={apiBlockOfCode?.steps[displayIndex].tree} />: null}
         </>
     );
+
 };

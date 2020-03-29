@@ -66,6 +66,24 @@ nav {
   transition: all 0.4s;
 }
 
+button .fa {
+    font-size: 25px !important;
+    margin-left: -5px !important;
+}
+
+.panel button .fa {
+    font-size: 15px !important;
+    margin-left: -5px !important;
+}
+
+input.form-control {
+    font-size: 1.4em !important;
+}
+
+.md-form {
+    width: 100% !important;
+}
+
 .breadcrumb-item:hover {
   cursor: pointer;
   color: #444 !important;
@@ -81,4 +99,60 @@ nav {
   color: #444 !important;
   border: none !important;
   border-bottom: 1px solid #4444445d !important;
+}
+
+.fixed-layout {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 69;
+  background: #333333ee;
+}
+.spinner-container {
+  width: 140px;
+  height: 130px;
+  margin: 130px auto;
+  margin-top: calc(100vh / 2 - 50px);
+}
+
+.block {
+  position: relative;
+  box-sizing: border-box;
+  float: left;
+  margin: 0 14px 14px 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  background: #45526e;
+}
+
+.block:nth-child(4n + 1) {
+  animation: wave 1.2s ease 0s infinite;
+}
+.block:nth-child(4n + 2) {
+  animation: wave 1.2s ease 0.2s infinite;
+}
+.block:nth-child(4n + 3) {
+  animation: wave 1.2s ease 0.4s infinite;
+}
+.block:nth-child(4n + 4) {
+  animation: wave 1.2s ease 0.6s infinite;
+  margin-right: 0;
+}
+
+@keyframes wave {
+  0% {
+    top: 0;
+    opacity: 1;
+  }
+  50% {
+    top: 30px;
+    opacity: 0.2;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+  }
 }
