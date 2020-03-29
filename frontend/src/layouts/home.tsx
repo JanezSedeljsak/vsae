@@ -11,7 +11,7 @@ import { _nF } from './../helpers/numberformat';
 export default () => {
     const [expression, setExpression] = useState<string>('');
     const [modal, setModal] = useState<boolean>(false);
-    const [{ equation, VSAEExpression, result, steps }, setApiBlockOfCode] = useState<any>({});
+    const [{ equation, VSAEExpression, result, steps }, setTreeData] = useState<any>({});
     const [displayIndex, setDisplayIndex] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const [fileupload, setFileUpload] = useState<number>(0);
@@ -26,7 +26,7 @@ export default () => {
         if (!expression) return;
         setLoading(true);
         const response: any = await api.buildJsonTree(expression);
-        setApiBlockOfCode(response.data.base);
+        setTreeData(response.data.base);
         setDisplayIndex(0);
         await sleep(1000);
         setLoading(false);
@@ -42,8 +42,9 @@ export default () => {
 
     function getStepLabelsAtIndex(index: number) {
         const { left, right, result, operation, isFunction } = steps[index + 1] || {};
-        let description;
-        let equation;
+        let stepNum = index + 1 <= steps?.length - 1 ? `${index + 1}/${steps?.length - 1}` : 'Konec'
+        let description = '';
+        let equation = '';
 
         if (displayIndex + 1 !== steps.length) {
             if (isFunction) {
@@ -58,10 +59,10 @@ export default () => {
 
         return (
             <>
-                <LabeledHeader {...{ icon: 'info-circle', label: 'Korak:', val: (index + 1) || '' }} />
-                <LabeledHeader {...{ icon: 'caret-right', label: 'Vmesni korak:', val: description || 'Konec', mathFont: true }} />
-                <LabeledHeader {...{ icon: 'caret-right', label: 'Izračun:', val: equation || '/' }} />
-                <LabeledHeader {...{ icon: 'caret-right', label: 'Stanje izraza:', val: equation || '/' }} />
+                <LabeledHeader {...{ icon: 'info-circle', label: 'Korak:', val: stepNum }} />
+                <LabeledHeader {...{ icon: 'caret-right', label: 'Vmesni korak:', val: description, mathFont: true }} />
+                <LabeledHeader {...{ icon: 'caret-right', label: 'Izračun:', val: equation }} />
+                <LabeledHeader {...{ icon: 'caret-right', label: 'Stanje izraza:', val: equation }} />
             </>
         );
     }
@@ -87,7 +88,7 @@ export default () => {
                             </h5>
                         </div>
                     </MDBListGroupItem>
-                    {steps && steps.slice(1, steps.length).map((_: any, index: number) => (
+                    {steps && Array.from(Array(steps.length - 1), (_: undefined, index: number) => (
                         <MDBListGroupItem key={index}>
                             {getStepLabelsAtIndex(index)}
                         </MDBListGroupItem>
