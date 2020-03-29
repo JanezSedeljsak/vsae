@@ -37,9 +37,9 @@ def tfi():
     data = request.json
     base64Img = data['encodedImage']
 
-    #res = ImgToText(base64Img)
+    res = ImgToText(base64Img)
 
-    return ServerMethods.dispatchJSON({ 'equation': '5+5' })
+    return ServerMethods.dispatchJSON({ 'equation': res._getEquation() })
 
 @app.route('/api/bjs', methods=['POST']) # build json structure
 def bjs():
@@ -62,4 +62,4 @@ def serve(path):
     else:
         return send_from_directory(app.static_folder, 'index.html')
 
-app.run(debug=True)
+#app.run(debug=True)
