@@ -105,9 +105,11 @@ class EquationFormating:
                         fEq += ' - '     
             elif el != ' ':
                 fEq += el
-        
+
+        firstStageFormat = fEq
+
         if checkForFunctions:
             if EquationFormating.anyInList(fEq, ['abs', 'cos', 'sin', 'tan', 'log', 'ln', '!']):
                 fEq = EquationFormating.formatFunctionalEquation(fEq.strip())
 
-        return fEq.strip()
+        return fEq.strip(), firstStageFormat

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { MDBBtn, MDBModal, MDBModalHeader, MDBListGroup, MDBModalBody, MDBListGroupItem, MDBIcon } from 'mdbreact';
 import Sketch from "react-p5";
 import sleep from './../helpers/sleep';
 import treeStructure from './../interfaces/tree';
-import hexagon from './../resources/hexagon.png';
 
 interface Props {
     jsonTree: treeStructure | undefined,
 }
 
 export default (props: Props) => {
-    const [jsonTree,] = useState<treeStructure | undefined>(props.jsonTree);
+
+    const [jsonTree, setJsonTree] = useState<treeStructure | undefined>(props.jsonTree);
+    useEffect(() => setJsonTree(props.jsonTree), [props.jsonTree])
 
     function hexagon(s:any, p5:any) {
         p5.noStroke();
@@ -46,10 +46,11 @@ export default (props: Props) => {
 
         hexagon(.22,p5);
         p5.fill('#eee');
-        if (tree?.value.length <= 2) {
-            p5.text(tree?.value, -10, 10);
+        const treeVal = String(tree?.value);
+        if (treeVal.length <= 2) {
+            p5.text(treeVal, -10, 10);
         } else {
-            let printOut = tree?.value.length == 3 ? tree?.value : tree?.value.substr(0,3) + '...'
+            let printOut = treeVal.length == 3 ? treeVal : treeVal.substr(0,3) + '...'
             p5.text(printOut, -16, 10);
         }
     }
@@ -62,6 +63,7 @@ export default (props: Props) => {
     }
 
     function draw(p5: any) {
+        p5.clear();
         p5.translate(900, 40);
         drawTree(jsonTree, p5, 350);
     }
