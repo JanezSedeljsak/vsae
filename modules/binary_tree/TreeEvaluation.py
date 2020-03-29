@@ -8,7 +8,6 @@ class Evaulute:
     primaryTree = None
     steps = []
     base = {}
-    identForRemoval = None
 
     def __init__(self, tree, initialEq, VSAEExpression, buildForDrawing=True):
         self.primaryTree = tree
@@ -19,8 +18,7 @@ class Evaulute:
         updatedTree = self.primaryTree
         for key, step in enumerate(self.steps):
             if key != 0:
-                self.identForRemoval = step['cTree'].ident
-                updatedTree = self.buildWithoutBrach(updatedTree, step['cTree'].ident, step['val'])
+                updatedTree = Evaulute._buildWithoutBrach(updatedTree, step['cTree'].ident, step['val'])
             updatedSteps.append({
             'left': step['left'],
             'right': step['right'],
@@ -56,14 +54,6 @@ class Evaulute:
         else:
             return tree.data
 
-    def buildWithoutBrach(self, tree, id, newVal):
-        return Node(
-            tree.data,
-            left=self.buildWithoutBrach(tree.left, tree.left.ident, newVal) if tree.left else None,
-            right=self.buildWithoutBrach(tree.right, tree.right.ident, newVal) if tree.right else None,
-            ident=id
-        ) if tree.ident != self.identForRemoval else Node(newVal, left=None, right=None, ident=id)
-
     @staticmethod
     def _genStep(_primaryTree, _left=None, _right=None, _oper=None, _val=None, _cTree=None):
         return {
@@ -74,3 +64,13 @@ class Evaulute:
             'primaryTree': _primaryTree,
             'cTree': _cTree
         }
+
+
+    @staticmethod
+    def _buildWithoutBrach(tree, id, newVal):
+        return Node(
+            tree.data,
+            left=Evaulute._buildWithoutBrach(tree.left, id, newVal) if tree.left else None,
+            right=Evaulute._buildWithoutBrach(tree.right, id, newVal) if tree.right else None,
+            ident=tree.ident
+        ) if tree.ident != id else Node(newVal, left=None, right=None, ident=id)

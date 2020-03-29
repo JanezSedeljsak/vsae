@@ -117,10 +117,14 @@ export default () => {
         let equation;
 
         if (displayIndex+1 !== apiBlockOfCode.steps.length) {
-            description = `Za naslednje vrednosti ${_nF(left)}, ${_nF(right)} izvedemo naslednjo ${isFunction ? `funkcijo: ${right}` : `voperacijo: ${operation}`}`;
-            equation = (isFunction) ?
-                    ((right !== 'fac') ? `${right}(${_nF(left)})` : `${_nF(left)}!`) + ` = ${_nF(result)}`
-                    : `${_nF(left)} ${operation} ${_nF(right)} = ${_nF(result)}`;
+            if (isFunction) {
+                description = `Za naslednjo vrednost ${_nF(left)} izvedemo funkcijo: ${right}`;
+                equation = ((right !== 'fac') ? `${right}(${_nF(left)})` : `${_nF(left)}!`) + ` = ${_nF(result)}`;
+            } 
+            else {
+                description = `Za naslednje vrednosti ${_nF(left)}, ${_nF(right)} izvedemo operacijo: ${operation}`;
+                equation = `${_nF(left)} ${operation} ${_nF(right)} = ${_nF(result)}`;
+            }
         }
         
         return (
