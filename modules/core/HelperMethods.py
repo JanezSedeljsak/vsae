@@ -34,31 +34,46 @@ class EquationFormating:
         return -1
 
     @staticmethod
-    def formatFunctionalEquation(eq):
+    def changeFacToFunc(eq):
+        for i in range(len(eq)):
+            if eq[i] == '!':
+                eq = f'{eq[:i].strip()} f fac {eq[i+1:].strip()}'
+
+        return eq
+                
+
+    @staticmethod
+    def reformatEq(eq, key, middleIndex, function):
+        closingIndex = EquationFormating.getClosingBracket(eq, middleIndex)
+        prepend = eq[:key].strip()
+        inbetween = eq[middleIndex:closingIndex+1].strip()
+        append = eq[closingIndex+1:].strip()
+
+        if len(prepend):
+            # EG: -cos(5*4) or -5*(-cos(5*4)/2)
+            if prepend[-1] == '-':
+                prependList = list(prepend)
+                prependList[-1] = '( 0 -'
+                prepend = ''.join(prependList)
+
+                return f'{prepend} ( {inbetween} f {function} ) ) {append}'
+
+        return f'{prepend} ( {inbetween} f {function} ) {append}'
+
+    @staticmethod
+    def formatFunctionalEquation(eq, checkForFactorial=True):
         funcOperators = ['abs(', 'cos(', 'sin(', 'tan(', 'log(']
-        for i in range(len(eq)-6):
-
-            closingIndex = -1
-            middleIndex = -1
-            function = ''
-
+        for i in range(len(eq)):
             if eq[i:i+4] in funcOperators:
-                middleIndex = i + 3
-                closingIndex = EquationFormating.getClosingBracket(eq, middleIndex)
-                function = eq[i:i+3]
-                
+                eq = EquationFormating.reformatEq(eq, i, i+3, eq[i:i+3])
+                continue    
             elif eq[i:i+3] == 'ln(':
-                middleIndex = i + 2
-                closingIndex = EquationFormating.getClosingBracket(eq, middleIndex)
-                function = 'ln'
-                
-            if closingIndex != -1:
-                prepend = eq[:i].strip()
-                inbetween = eq[middleIndex:closingIndex+1].strip()
-                append = eq[closingIndex+1:].strip()
-
-                eq = f'{prepend} {inbetween} f {function} {append}'
+                eq = EquationFormating.reformatEq(eq, i, i+2, 'ln')
         
+        if checkForFactorial:
+            if '!' in eq.strip():
+                eq = EquationFormating.changeFacToFunc(eq.strip())
+
         return eq.strip()
 
     @staticmethod
@@ -66,23 +81,35 @@ class EquationFormating:
         fEq = ''
         mathOperators = ['+', '/', '*', '^']
 
-        for el in eq:
+
+        iterList = list(eq.strip())
+        for key, el in enumerate(iterList):
             if el in mathOperators:
                 fEq += f' {el} '
             elif el == '(':
-                fEq += f'( '               
+                fEq += f'( '
             elif el == ')':
-                fEq += f' )'                
-            elif el == '-':               
-                if fEq.strip()[-1] == '(':
-                    fEq += '-'                  
+                fEq += f' )'
+            elif el == '-':  
+                if key == 0:
+                    fEq = '-'
+                # EG: 5*( - ( 7 + 4 ) / 2 ) * 9
+                elif eq[key+1:].strip()[0] == '(' and fEq.strip()[-1] == '(':
+                    fEq += '( 0 - '
+                    closingIndex = EquationFormating.getClosingBracket(eq, key)
+                    iterList[closingIndex] = ' ) )'
                 else:
-                    fEq += ' - '            
+                    if fEq.strip()[-1] == '(':
+                        fEq += '-'
+                    else:
+                        fEq += ' - '     
             elif el != ' ':
                 fEq += el
-        
+
+        firstStageFormat = fEq
+
         if checkForFunctions:
-            if EquationFormating.anyInList(fEq, ['abs', 'cos', 'sin', 'tan', 'log', 'ln']):
+            if EquationFormating.anyInList(fEq, ['abs', 'cos', 'sin', 'tan', 'log', 'ln', '!']):
                 fEq = EquationFormating.formatFunctionalEquation(fEq.strip())
 
-        return fEq.strip()
+        return fEq.strip(), firstStageFormat
