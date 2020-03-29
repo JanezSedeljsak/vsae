@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import sleep from './sleep';
 import api from './api';
 
 export const useUpload = (callOut: any) => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<any>(null);
-    const reader = new FileReader();
-
+    
     useEffect(() => {
-        if (callOut != 0 ) {
+        const reader = new FileReader();
+        if (callOut !== 0 ) {
             const input: any = document.createElement('input');
             input.type = 'file';
             input.style.visibility = 'hidden';
-            setTimeout(() => { input.click() }, 200);
+            setTimeout(() => input.click(), 200);
             
             input.onchange = () => {
                 setLoading(true);
@@ -25,9 +25,7 @@ export const useUpload = (callOut: any) => {
                     setLoading(false);
                 }, false);
 
-                if (file) {
-                    reader.readAsDataURL(file)
-                }
+                if (file) reader.readAsDataURL(file)
             }
         }
     }, [callOut]);
