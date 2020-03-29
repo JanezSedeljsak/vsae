@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URI : string = ""; //'http://localhost:5000';
+const API_URI : string = 'http://localhost:5000';
 
 export default class {
     static buildJsonTree = (expression: string) : Promise<Object> => {
