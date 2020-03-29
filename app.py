@@ -61,5 +61,3 @@ def serve(path):
         return send_from_directory(app.static_folder, path)
     else:
         return send_from_directory(app.static_folder, 'index.html')
-
-app.run(debug=True)
