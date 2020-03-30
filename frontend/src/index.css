@@ -68,7 +68,19 @@ nav {
 
 button .fa {
     font-size: 25px !important;
-    margin-left: -5px !important;
+    margin-left: -10px !important;
+}
+
+:not(.btn-group) > .Ripple-parent {
+    border-radius: 50% !important;
+    width: 60px !important;
+    height: 60px !important;
+    transition: all .2s !important;
+    color: #eee !important;
+}
+
+:not(.btn-group) > .Ripple-parent:hover {
+    border-radius: 40% !important;
 }
 
 .panel button .fa {
@@ -125,7 +137,7 @@ input.form-control {
   width: 18px;
   height: 18px;
   border-radius: 3px;
-  background: #45526e;
+  background: #cacaca;
 }
 
 .block:nth-child(4n + 1) {

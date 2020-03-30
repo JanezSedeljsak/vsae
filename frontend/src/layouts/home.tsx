@@ -142,10 +142,10 @@ export default () => {
                     label="Vnesi izraz"
                     onChange={(e: React.FormEvent<HTMLInputElement>) => setExpression(e.currentTarget.value)}
                 />
-                <MDBBtn gradient="aqua" onClick={() => setFileUpload(fileupload + 1)} style={{ borderRadius: '50%', width: '80px' }}>
+                <MDBBtn gradient="aqua" onClick={() => setFileUpload(fileupload + 1)}>
                     <MDBIcon icon="upload" />
                 </MDBBtn>
-                <MDBBtn gradient="blue" onClick={displayTree} style={{ borderRadius: '50%', width: '80px' }}>
+                <MDBBtn  gradient="blue" onClick={displayTree}>
                     <MDBIcon icon="equals" />
                 </MDBBtn>
             </div>
