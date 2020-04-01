@@ -9,13 +9,14 @@ import { LabeledHeader } from './../components/label';
 import { _nF } from './../helpers/numberformat';
 
 export default () => {
+    const isProd : boolean = !(window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
     const [expression, setExpression] = useState<string>('');
     const [modal, setModal] = useState<boolean>(false);
     const [{ equation, VSAEExpression, result, steps }, setTreeData] = useState<any>({});
     const [displayIndex, setDisplayIndex] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const [fileupload, setFileUpload] = useState<number>(0);
-    const { data, fileIsUplading } = useUpload(fileupload);
+    const { data, fileIsUplading } = useUpload(fileupload, isProd);
 
     useEffect(() => setLoading(!!fileIsUplading), [fileIsUplading]);
     useEffect(() => data?.responseEquation && setExpression(data?.responseEquation), [data]);
@@ -25,7 +26,8 @@ export default () => {
     const displayTree = async (): Promise<void> => {
         if (!expression) return;
         setLoading(true);
-        const response: any = await api.buildJsonTree(expression);
+        const isProd : boolean = !(window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+        const response: any = await api.buildJsonTree(expression, isProd);
         setTreeData(response.data.base);
         setDisplayIndex(0);
         await sleep(1000);

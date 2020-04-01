@@ -1,7 +1,7 @@
 import operator
-from modules.binary_tree.Node import Index as Node
-from modules.core.VsaeMath import MathOperations as VSAEMath
-from modules.binary_tree.TreeToJson import Index as toJson
+from api.modules.binarytree.node import Index as Node
+from api.utils.vsae.vmath import MathOperations as VSAEMath
+from api.modules.binarytree.treetojson import Index as toJson
 
 class Evaulute:
 
@@ -20,13 +20,13 @@ class Evaulute:
             if key != 0:
                 updatedTree = Evaulute._buildWithoutBrach(updatedTree, self.steps[key]['cTree'].ident, step['val'])
             updatedSteps.append({
-            'left': step['left'],
-            'right': step['right'],
-            'result': step['val'],
-            'operation': step['oper'],
-            'isFunction': (True if VSAEMath._isValidFunction(step['right']) else False),
-            'tree': toJson(updatedTree)
-        })
+                'left': step['left'],
+                'right': step['right'],
+                'result': step['val'],
+                'operation': step['oper'],
+                'isFunction': (True if VSAEMath._isValidFunction(step['right']) else False),
+                'tree': toJson(updatedTree)
+            })
 
         self.base = {
             'equation': initialEq,
@@ -80,3 +80,13 @@ class Evaulute:
             newTree = Node(newVal, left=None, right=None, ident=id)
 
         return newTree
+
+    @staticmethod
+    def _evaluteAndGetOnlyResult(tree):
+        if tree.left and tree.right:
+            left = Evaulute._evaluteAndGetOnlyResult(tree.left)
+            right = Evaulute._evaluteAndGetOnlyResult(tree.right)
+            operation = tree.data
+            return VSAEMath._baseMathOperation(operation, left, right)
+        else:
+            return tree.data

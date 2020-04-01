@@ -1,5 +1,4 @@
-import operator
-from modules.binary_tree.Node import Index as Node
+from api.modules.binarytree.node import Index as Node
 
 Index = lambda expTree : {
     'value': expTree.data,

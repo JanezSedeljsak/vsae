@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import sleep from './sleep';
 import api from './api';
 
-export const useUpload = (callOut: any) => {
+export const useUpload = (callOut: any, isProd: boolean) => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<any>(null);
     
@@ -19,7 +19,7 @@ export const useUpload = (callOut: any) => {
                 const file = input.files[0];
                 reader.addEventListener("load", async function () {
                     const encodedImage: any = reader.result;
-                    const response: any = await api.imgToText(encodedImage);
+                    const response: any = await api.imgToText(encodedImage, isProd);
                     await sleep(500);
                     setData({ responseEquation: response.data.equation });
                     setLoading(false);
