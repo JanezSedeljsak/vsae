@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import sleep from './sleep';
 import api from './api';
+import { useToasts } from 'react-toast-notifications';
 
-export const useUpload = (callOut: any, isProd: boolean) => {
+export const useUpload = (callOut: any) => {
+    const { addToast } = useToasts();
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<any>(null);
     
@@ -19,13 +21,11 @@ export const useUpload = (callOut: any, isProd: boolean) => {
                 const file = input.files[0];
                 reader.addEventListener("load", async function () {
                     const encodedImage: any = reader.result;
-                    const response: any = await api.imgToText(encodedImage, isProd);
+                    const response: any = await api.imgToText(encodedImage);
                     await sleep(500);
-                    if (response.data.error) console.log(response);
-                    else {
-                        setData({ responseEquation: response.data.equation });
-                        setLoading(false);
-                    }
+                    if (response.data.error) addToast(response.data.error, { appearance: 'error' });
+                    else setData({ responseEquation: response.data.equation });
+                    setLoading(false);
 
                 }, false);
 
