@@ -1,6 +1,8 @@
 from math import *
+from decimal import Decimal
 
 class MathOperations:
+
     @staticmethod
     def _isValidFunction(name):
         return name in ['cos','sin','tan','log','ln','abs','fac']
@@ -31,4 +33,11 @@ class MathOperations:
     @staticmethod
     def _convertDegToRadians(deg):
         return deg * (pi / 180)
+
+    @staticmethod
+    def _numF(num):
+        if not num:
+            return 0
+        else:
+            return int(num) if Decimal(num) % 1 == 0 else round(Decimal(num), 2)
 

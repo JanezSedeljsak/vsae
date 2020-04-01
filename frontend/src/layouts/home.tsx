@@ -7,7 +7,6 @@ import { default as Spinner } from './../layouts/loading';
 import sleep from './../helpers/sleep';
 import { useUpload } from './../helpers/upload';
 import { LabeledHeader } from './../components/label';
-import { _nF } from './../helpers/numberformat';
 
 export default () => {
     const [expression, setExpression] = useState<string>('');
@@ -46,21 +45,8 @@ export default () => {
     }
 
     function getStepLabelsAtIndex(index: number) {
-        const { left, right, result, operation, isFunction } = steps[index + 1] || {};
-        let stepNum = index + 1 <= steps?.length - 1 ? `${index + 1}/${steps?.length - 1}` : 'Konec'
-        let description = '';
-        let equation = '';
-
-        if (displayIndex + 1 !== steps.length) {
-            if (isFunction) {
-                description = `Za naslednjo vrednost ${_nF(left)} izvedemo funkcijo: ${right}`;
-                equation = ((right !== 'fac') ? `${right}(${_nF(left)})` : `${_nF(left)}!`) + ` = ${_nF(result)}`;
-            }
-            else {
-                description = `Za naslednje vrednosti ${_nF(left)}, ${_nF(right)} izvedemo operacijo: ${operation}`;
-                equation = `${_nF(left)} ${operation} ${_nF(right)} = ${_nF(result)}`;
-            }
-        }
+        const { equation, description } = steps[index + 1] || {};
+        const stepNum = index + 1 <= steps?.length - 1 ? `${index + 1}/${steps?.length - 1}` : 'Konec'
 
         return (
             <>
@@ -123,10 +109,10 @@ export default () => {
         <>
             <div style={{ width: 'calc(100%-20px)', height: 1, background: '#aaa' }} />
             <div style={{ display: "flex", flexDirection: 'row', width: '100%', padding: 10 }}>
-                <div style={{ display: "flex", flexDirection: 'column', width: '50%' }}>
+                <div style={{ display: "flex", flexDirection: 'column', width: '70%' }}>
                     {getStepLabelsAtIndex(displayIndex)}
                 </div>
-                <div style={{ display: "flex", flexDirection: "row-reverse", width: '50%' }}>
+                <div style={{ display: "flex", flexDirection: "row-reverse", width: '30%' }}>
                     <MDBBtnGroup className="mr-2">
                         <MDBBtn color="mdb-color" onClick={() => changeStepIndex(displayIndex - 1)}><MDBIcon icon="angle-double-left" /></MDBBtn>
                         <MDBBtn color="mdb-color" onClick={() => runSolve(displayIndex + 1)}><MDBIcon icon="calculator" /></MDBBtn>

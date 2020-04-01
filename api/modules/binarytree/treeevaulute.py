@@ -19,12 +19,28 @@ class Evaulute:
         for key, step in enumerate(self.steps):
             if key != 0:
                 updatedTree = Evaulute._buildWithoutBrach(updatedTree, self.steps[key]['cTree'].ident, step['val'])
+
+            isFunction = VSAEMath._isValidFunction(step['right'])
+
+            right = VSAEMath._numF(step['right']) if not isFunction else step['right']
+            left = VSAEMath._numF(step['left'])
+            value = VSAEMath._numF(step['val'])
+
+            if isFunction:
+                description = f'Za naslednjo vrednost: {left} izvedemo funkcijo: {right}'
+                equation = f'{right}({left})' if right != 'fac' else f'{left}! = {value}'
+            else:
+                description = f'Za naslednje vrednosti: {step["left"]}, {right} izvedemo naslednjo operacijo: {step["oper"]}'
+                equation = f'{left} {step["oper"]} {right} = {value}'
+
             updatedSteps.append({
                 'left': step['left'],
                 'right': step['right'],
                 'result': step['val'],
                 'operation': step['oper'],
-                'isFunction': (True if VSAEMath._isValidFunction(step['right']) else False),
+                'equation': equation,
+                'description': description,
+                'isFunction': isFunction,
                 'tree': toJson(updatedTree)
             })
 
