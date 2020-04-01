@@ -1,9 +1,9 @@
 # import modules for binary tree parsing
-from modules.binary_tree.ToTreeConv import Index as build_tree
-from modules.binary_tree.TreeEvaluation import Index as binaryTreeEvaluation
+from api.modules.binary_tree.ToTreeConv import Index as build_tree
+from api.modules.binary_tree.TreeEvaluation import Index as binaryTreeEvaluation
 
 # import modules for shunting yard algorithm
-from modules.shunting_yard_algo.Algorithm import Index as shuntingYardAlgorithmEvaluation
+from api.modules.shunting_yard_algo.Algorithm import Index as shuntingYardAlgorithmEvaluation
 
 
 def main():

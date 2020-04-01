@@ -1,4 +1,4 @@
-from modules.binary_tree.Node import Index as Node
+from api.modules.binarytree.node import Index as Node
 import uuid
 
 def is_greater_precedence(op1, op2):

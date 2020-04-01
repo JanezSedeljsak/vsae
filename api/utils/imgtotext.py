@@ -1,18 +1,19 @@
 import base64
 import io
+import os
+import pytesseract
 
 try:
     from PIL import Image
-    import pytesseract
 except ImportError:
     try:
         import Image
-        import pytesseract
     except ImportError:
-        print("cant import import modules")
+        print("cant import import Pillow")
 
-pytesseract.pytesseract.tesseract_cmd = '/app/.apt/usr/bin/tesseract'
-#pytesseract.pytesseract.tesseract_cmd = 'C:/Tesseract-OCR/tesseract.exe'
+
+if os.environ.get('WORK_ENV') != 'PROD':
+    pytesseract.pytesseract.tesseract_cmd = 'C:/Tesseract-OCR/tesseract.exe'
 
 class ImgToText:
     equation = ""
