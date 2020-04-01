@@ -28,9 +28,12 @@ export default () => {
         setLoading(true);
         const isProd : boolean = !(window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
         const response: any = await api.buildJsonTree(expression, isProd);
-        setTreeData(response.data.base);
-        setDisplayIndex(0);
-        await sleep(1000);
+        if (response.data.error) console.log(response);
+        else {
+            setTreeData(response.data.base);
+            setDisplayIndex(0);
+            await sleep(1000);
+        }
         setLoading(false);
     }
 

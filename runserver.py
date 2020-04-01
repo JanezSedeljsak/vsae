@@ -8,4 +8,4 @@ if __name__ == '__main__':
         app.run(port=5000, host="0.0.0.0", use_reloader=False)
     else:
         app = create_app(DevelopmentConfig)
-        app.run(port=5000, host="0.0.0.0", use_reloader=True)
+        app.run(port=6969, host="0.0.0.0", use_reloader=True)

@@ -49,19 +49,14 @@ def create_app(config):
                         format='%(asctime)s|%(levelname)s|%(filename)s:%(lineno)s|%(message)s',
                         level=logging.DEBUG)
 
-    @app.errorhandler(400)
-    def bad_request(e):
-        logging.error(e)
-        return response_with(resp.BAD_REQUEST_400)
-
     @app.errorhandler(500)
     def server_error(e):
         logging.error(e)
-        return response_with(resp.SERVER_ERROR_500)
+        return ServerMethods.dispatchJSON({ 'error': "500 internal error" })
 
     @app.errorhandler(404)
     def not_found(e):
         logging.error(e)
-        return response_with(resp.NOT_FOUND_HANDLER_404)
+        return ServerMethods.dispatchJSON({ 'error': "404 route not found" })
 
     return app

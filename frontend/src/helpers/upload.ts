@@ -21,8 +21,12 @@ export const useUpload = (callOut: any, isProd: boolean) => {
                     const encodedImage: any = reader.result;
                     const response: any = await api.imgToText(encodedImage, isProd);
                     await sleep(500);
-                    setData({ responseEquation: response.data.equation });
-                    setLoading(false);
+                    if (response.data.error) console.log(response);
+                    else {
+                        setData({ responseEquation: response.data.equation });
+                        setLoading(false);
+                    }
+
                 }, false);
 
                 if (file) reader.readAsDataURL(file)
