@@ -100,7 +100,7 @@ class Evaulute:
     def _buildWithoutBrach(tree, id, newVal, last=False):
         if tree.color == 1:
             evaluation = Evaulute._evaluteAndGetOnlyResult(tree)
-            newTree = Node(evaluation, left=None, right=None, ident=tree.ident, color=-1)
+            newTree = Node(evaluation, left=None, right=None, ident=tree.ident, color=-1 if not last else 2)
         else:
             if last:
                 newTree = Node(tree.data, left=None, right=None, ident=id, color=2)
