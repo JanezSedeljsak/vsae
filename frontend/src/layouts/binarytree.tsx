@@ -10,9 +10,9 @@ export default ({ treeForBuild }: Props) => {
     const [jsonTree, setJsonTree] = useState<treeStructure | undefined>(treeForBuild);
     useEffect(() => setJsonTree(treeForBuild), [treeForBuild])
 
-    function hexagon(s:any, p5:any) {
+    function hexagon(s:any, p5:any, color: string = '#45526e') {
         p5.noStroke();
-        p5.fill('#45526e');
+        p5.fill(color);
         p5.push();
         p5.scale(s);
         p5.beginShape();
@@ -42,7 +42,23 @@ export default ({ treeForBuild }: Props) => {
             p5.noStroke();
         }
 
-        hexagon(.22,p5);
+        switch(tree.color) {
+            case -1: 
+                hexagon(.22,p5); 
+                break;
+            case 1: 
+                hexagon(.22,p5,'#1976d2'); 
+                break;
+            case 2: hexagon(.22,p5,'#303f9f'); 
+                break;
+            case 3: 
+                hexagon(.32,p5,'#1976d2'); 
+                break;
+            default: 
+                hexagon(.22,p5); 
+                break;
+        }
+
         p5.fill('#eee');
         const treeVal = String(tree?.value);
         if (treeVal.length <= 2) {
@@ -62,7 +78,7 @@ export default ({ treeForBuild }: Props) => {
 
     function draw(p5: any) {
         p5.clear();
-        p5.translate(900, 40);
+        p5.translate(900, 60);
         drawTree(jsonTree, p5, 350);
     }
 

@@ -45,7 +45,7 @@ export default () => {
     }
 
     function getStepLabelsAtIndex(index: number) {
-        const { equation, description } = steps[index + 1] || {};
+        const { equation, description } = steps[index] || {};
         const stepNum = index + 1 <= steps?.length - 1 ? `${index + 1}/${steps?.length - 1}` : 'Konec'
 
         return (

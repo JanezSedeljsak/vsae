@@ -11,38 +11,52 @@ class Evaulute:
 
     def __init__(self, tree, initialEq, VSAEExpression, buildForDrawing=True):
         self.primaryTree = tree
-        self.steps = [Evaulute._genStep(self.primaryTree)]
+        self.steps = []
         evaluation = self.evaluate(self.primaryTree)
 
         updatedSteps = []
         updatedTree = self.primaryTree
-        for key, step in enumerate(self.steps):
-            if key != 0:
-                updatedTree = Evaulute._buildWithoutBrach(updatedTree, self.steps[key]['cTree'].ident, step['val'])
+        for step in list(self.steps + [Evaulute._genStep(Node(evaluation, color=3))]):
 
-            isFunction = VSAEMath._isValidFunction(step['right'])
-
-            right = VSAEMath._numF(step['right']) if not isFunction else step['right']
-            left = VSAEMath._numF(step['left'])
-            value = VSAEMath._numF(step['val'])
-
-            if isFunction:
-                description = f'Za naslednjo vrednost: {left} izvedemo funkcijo: {right}'
-                equation = f'{right}({left})' if right != 'fac' else f'{left}! = {value}'
+            if not step['cTree']:
+                # generate last step
+                updatedSteps.append({
+                    'left': '',
+                    'right': '',
+                    'result': '',
+                    'operation': '',
+                    'equation': '',
+                    'description': '',
+                    'isFunction': '',
+                    'tree': toJson(step['primaryTree'])
+                })
             else:
-                description = f'Za naslednje vrednosti: {step["left"]}, {right} izvedemo naslednjo operacijo: {step["oper"]}'
-                equation = f'{left} {step["oper"]} {right} = {value}'
+                updatedTree = Evaulute._buildWithoutBrach(updatedTree, step['cTree'].ident, step['val'])
+                isFunction = VSAEMath._isValidFunction(step['right'])
 
-            updatedSteps.append({
-                'left': step['left'],
-                'right': step['right'],
-                'result': step['val'],
-                'operation': step['oper'],
-                'equation': equation,
-                'description': description,
-                'isFunction': isFunction,
-                'tree': toJson(updatedTree)
-            })
+                right = VSAEMath._numF(step['right']) if not isFunction else step['right']
+                left = VSAEMath._numF(step['left'])
+                value = VSAEMath._numF(step['val'])
+
+                if isFunction:
+                    description = f'Za naslednjo vrednost: {left} izvedemo funkcijo: {right}'
+                    equation = f'{right}({left})' if right != 'fac' else f'{left}! = {value}'
+                else:
+                    description = f'Za naslednje vrednosti: {step["left"]}, {right} izvedemo naslednjo operacijo: {step["oper"]}'
+                    equation = f'{left} {step["oper"]} {right} = {value}'
+
+                updatedSteps.append({
+                    'left': step['left'],
+                    'right': step['right'],
+                    'result': step['val'],
+                    'operation': step['oper'],
+                    'equation': equation,
+                    'description': description,
+                    'isFunction': isFunction,
+                    'tree': toJson(updatedTree)
+                })
+
+
 
         self.base = {
             'equation': initialEq,
@@ -83,17 +97,28 @@ class Evaulute:
 
 
     @staticmethod
-    def _buildWithoutBrach(tree, id, newVal, setColor=False):
-        newTree = None
-        if tree.ident != id:
-            newTree = Node(
-                tree.data,
-                left=Evaulute._buildWithoutBrach(tree.left, id, newVal) if tree.left else None,
-                right=Evaulute._buildWithoutBrach(tree.right, id, newVal) if tree.right else None,
-                ident=tree.ident
-            )
+    def _buildWithoutBrach(tree, id, newVal, last=False):
+        if tree.color == 1:
+            evaluation = Evaulute._evaluteAndGetOnlyResult(tree)
+            newTree = Node(evaluation, left=None, right=None, ident=tree.ident, color=-1)
         else:
-            newTree = Node(newVal, left=None, right=None, ident=id)
+            if last:
+                newTree = Node(tree.data, left=None, right=None, ident=id, color=2)
+            elif tree.ident == id:
+                newTree = Node(
+                    tree.data,
+                    left=Evaulute._buildWithoutBrach(tree.left, id, newVal, last=True),
+                    right=Evaulute._buildWithoutBrach(tree.right, id, newVal, last=True),
+                    ident=id,
+                    color=1
+                )
+            else:
+                newTree = Node(
+                    tree.data,
+                    left=Evaulute._buildWithoutBrach(tree.left, id, newVal) if tree.left else None,
+                    right=Evaulute._buildWithoutBrach(tree.right, id, newVal) if tree.right else None,
+                    ident=tree.ident
+                )
 
         return newTree
 
