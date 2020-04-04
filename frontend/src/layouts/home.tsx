@@ -42,13 +42,13 @@ export default () => {
 
     const getToastSettings = (type: string): any => ({
         appearance: type,
-        autoDismiss: true
+        autoDismiss: false
     });
 
     async function runSolve(index: number,  isFirstRun: boolean = true) {
         if (isFirstRun) {
             setDisableControlls(true);
-            addToast("Reševanje v teku!", getToastSettings('success'));
+            addToast("Reševanje v teku!", getToastSettings('info'));
         }
         if (index >= 0 && index < steps?.length) {
             setDisplayIndex(index);

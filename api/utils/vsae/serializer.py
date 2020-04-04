@@ -24,5 +24,22 @@ class SearilizeEquation:
 
 
     def transformFunction(self, equation):
-        # TODO @chnage ( 100 f log ) => log(100)
-        return equation
+        # reverse loop through to prepend everyting
+        fEq = []
+        skipCount = 0
+
+        reversedEquation = (equation.split(" "))[::-1]
+        for key, el in enumerate(reversedEquation):
+            if skipCount > 0:
+                skipCount -= 1
+                continue
+
+            if not VSAEMath._isValidFunction(el):
+                fEq = [el] + fEq
+            else:
+                skipCount = 3
+                subEquation = f'{el}({reversedEquation[key+2]})' if el !=  'fac' else f'{reversedEquation[key+2]}!'
+
+                fEq = [subEquation] + fEq[:-1]
+
+        return " ".join(fEq).strip()
