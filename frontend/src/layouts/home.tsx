@@ -10,6 +10,7 @@ import { LabeledHeader } from './../components/label';
 
 export default () => {
     const [expression, setExpression] = useState<string>('');
+    const [disableControlls, setDisableControlls] = useState<boolean>(false);
     const [modal, setModal] = useState<boolean>(false);
     const [{ equation, VSAEExpression, result, steps }, setTreeData] = useState<any>({});
     const [displayIndex, setDisplayIndex] = useState<number>(0);
@@ -24,10 +25,13 @@ export default () => {
     const changeStepIndex = (index: number) => (index >= 0 && index < steps?.length) && setDisplayIndex(index);
 
     const displayTree = async (): Promise<void> => {
-        if (!expression) return;
+        if (!expression) {
+            addToast("Prosimo vnesite izraz!", getToastSettings('error'));
+            return;
+        }
         setLoading(true);
         const response: any = await api.buildJsonTree(expression);
-        if (response.data.error) addToast(response.data.error, { appearance: 'error' });
+        if (response.data.error) addToast(response.data.error, getToastSettings('error'));
         else {
             setTreeData(response.data.base);
             setDisplayIndex(0);
@@ -36,16 +40,28 @@ export default () => {
         setLoading(false);
     }
 
-    async function runSolve(index: number) {
+    const getToastSettings = (type: string): any => ({
+        appearance: type,
+        autoDismiss: true
+    });
+
+    async function runSolve(index: number,  isFirstRun: boolean = true) {
+        if (isFirstRun) {
+            setDisableControlls(true);
+            addToast("Reševanje v teku!", getToastSettings('success'));
+        }
         if (index >= 0 && index < steps?.length) {
             setDisplayIndex(index);
             await sleep(1000);
-            runSolve(index + 1)
+            runSolve(index + 1, false)
+        } else {
+            setDisableControlls(false);
+            addToast(`Izraz je bil uspešno rešen; rezultat: ${result.toFixed(2)}`, getToastSettings('success'));
         }
     }
 
     function getStepLabelsAtIndex(index: number) {
-        const { equation, description } = steps[index] || {};
+        const { equation, description, stepEquation } = steps[index] || {};
         const stepNum = index + 1 <= steps?.length - 1 ? `${index + 1}/${steps?.length - 1}` : 'Konec'
 
         return (
@@ -53,7 +69,7 @@ export default () => {
                 <LabeledHeader {...{ icon: 'info-circle', label: 'Korak:', val: stepNum }} />
                 <LabeledHeader {...{ icon: 'caret-right', label: 'Vmesni korak:', val: description, mathFont: true }} />
                 <LabeledHeader {...{ icon: 'caret-right', label: 'Izračun:', val: equation }} />
-                <LabeledHeader {...{ icon: 'caret-right', label: 'Stanje izraza:', val: equation }} />
+                <LabeledHeader {...{ icon: 'caret-right', label: 'Stanje izraza:', val: stepEquation }} />
             </>
         );
     }
@@ -98,7 +114,7 @@ export default () => {
             </div>
             <div style={{ display: "flex", flexDirection: "row-reverse", width: '20%' }}>
                 <MDBBtnGroup className="mr-2">
-                    <MDBBtn color="mdb-color" onClick={() => setModal(true)}><MDBIcon icon="list-ol" /></MDBBtn>
+                    <MDBBtn disabled={disableControlls} color="mdb-color" onClick={() => setModal(true)}><MDBIcon icon="list-ol" /></MDBBtn>
                 </MDBBtnGroup>
             </div>
             <hr style={{ borderTop: '1px solid black' }} />
@@ -114,9 +130,9 @@ export default () => {
                 </div>
                 <div style={{ display: "flex", flexDirection: "row-reverse", width: '30%' }}>
                     <MDBBtnGroup className="mr-2">
-                        <MDBBtn color="mdb-color" onClick={() => changeStepIndex(displayIndex - 1)}><MDBIcon icon="angle-double-left" /></MDBBtn>
-                        <MDBBtn color="mdb-color" onClick={() => runSolve(displayIndex + 1)}><MDBIcon icon="calculator" /></MDBBtn>
-                        <MDBBtn color="mdb-color" onClick={() => changeStepIndex(displayIndex + 1)}><MDBIcon icon="angle-double-right" /></MDBBtn>
+                        <MDBBtn disabled={disableControlls} color="mdb-color" onClick={() => changeStepIndex(displayIndex - 1)}><MDBIcon icon="angle-double-left" /></MDBBtn>
+                        <MDBBtn disabled={disableControlls}  color="mdb-color" onClick={() => runSolve(displayIndex + 1)}><MDBIcon icon="calculator" /></MDBBtn>
+                        <MDBBtn disabled={disableControlls} color="mdb-color" onClick={() => changeStepIndex(displayIndex + 1)}><MDBIcon icon="angle-double-right" /></MDBBtn>
                     </MDBBtnGroup>
                 </div>
                 <hr style={{ borderTop: '1px solid black' }} />
@@ -131,12 +147,13 @@ export default () => {
                 <MDBInput
                     value={expression}
                     label="Vnesi izraz"
+                    disabled={disableControlls}
                     onChange={(e: React.FormEvent<HTMLInputElement>) => setExpression(e.currentTarget.value)}
                 />
-                <MDBBtn gradient="aqua" onClick={() => setFileUpload(fileupload + 1)}>
+                <MDBBtn disabled={disableControlls} gradient="aqua" onClick={() => setFileUpload(fileupload + 1)}>
                     <MDBIcon icon="upload" />
                 </MDBBtn>
-                <MDBBtn  gradient="blue" onClick={displayTree}>
+                <MDBBtn  disabled={disableControlls} gradient="blue" onClick={displayTree}>
                     <MDBIcon icon="equals" />
                 </MDBBtn>
             </div>

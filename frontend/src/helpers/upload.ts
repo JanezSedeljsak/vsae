@@ -23,7 +23,7 @@ export const useUpload = (callOut: any) => {
                     const encodedImage: any = reader.result;
                     const response: any = await api.imgToText(encodedImage);
                     await sleep(500);
-                    if (response.data.error) addToast(response.data.error, { appearance: 'error' });
+                    if (response.data.error) addToast(response.data.error, { appearance: 'error', autoDismiss: true });
                     else setData({ responseEquation: response.data.equation });
                     setLoading(false);
 

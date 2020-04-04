@@ -2,6 +2,7 @@ import operator
 from api.modules.binarytree.node import Index as Node
 from api.utils.vsae.vmath import MathOperations as VSAEMath
 from api.modules.binarytree.treetojson import Index as toJson
+from api.utils.vsae.serializer import SearilizeEquation
 
 class Evaulute:
 
@@ -33,6 +34,8 @@ class Evaulute:
             else:
                 updatedTree = Evaulute._buildWithoutBrach(updatedTree, step['cTree'].ident, step['val'])
                 isFunction = VSAEMath._isValidFunction(step['right'])
+                stepExpression = SearilizeEquation(updatedTree)._getEquation()
+
 
                 right = VSAEMath._numF(step['right']) if not isFunction else step['right']
                 left = VSAEMath._numF(step['left'])
@@ -53,7 +56,8 @@ class Evaulute:
                     'equation': equation,
                     'description': description,
                     'isFunction': isFunction,
-                    'tree': toJson(updatedTree)
+                    'tree': toJson(updatedTree),
+                    'stepEquation': stepExpression
                 })
 
 

@@ -2,7 +2,6 @@ from flask import Blueprint
 from flask import request
 from api.utils.helpers import ServerMethods
 from api.utils.vsae.formater import EquationFormating
-from api.utils.vsae.reformater import EquationREFormating
 
 # import modules for binary tree parsing
 from api.modules.binarytree.stacktotree import Index as buildTreeFromExpression

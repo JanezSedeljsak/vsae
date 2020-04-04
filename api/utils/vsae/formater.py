@@ -96,7 +96,11 @@ class EquationFormating:
                     if fEq.strip()[-1] == '(':
                         fEq += '-'
                     else:
-                        fEq += ' - '     
+                        fEq += ' - '
+
+            elif el == ',':
+                fEq += '.'
+
             elif el != ' ':
                 fEq += el
 

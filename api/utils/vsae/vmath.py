@@ -39,5 +39,10 @@ class MathOperations:
         if not num:
             return 0
         else:
-            return int(num) if Decimal(num) % 1 == 0 else round(Decimal(num), 2)
+            try:
+                num = int(num) if Decimal(num) % 1 == 0 else round(Decimal(num), 2)
+                return num
+            except:
+                return 0
+
 
