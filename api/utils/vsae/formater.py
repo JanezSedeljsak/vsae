@@ -29,11 +29,13 @@ class EquationFormating:
 
     @staticmethod
     def changeFacToFunc(eq):
-        for i in range(len(eq)):
-            if eq[i] == '!':
-                eq = f'{eq[:i].strip()} f fac {eq[i+1:].strip()}'
+        counter = 0
+        while (counter < len(eq)):
+            if eq[counter] == '!':
+                eq = f'{eq[:counter].strip()} f fac {eq[counter+1:].strip()}'
+            counter += 1
 
-        return eq
+        return eq.strip()
                 
 
     @staticmethod
@@ -44,7 +46,6 @@ class EquationFormating:
         append = eq[closingIndex+1:].strip()
 
         if len(prepend):
-            # EG: -cos(5*4) or -5*(-cos(5*4)/2)
             if prepend[-1] == '-':
                 prependList = list(prepend)
                 if len(prepend) == 1:

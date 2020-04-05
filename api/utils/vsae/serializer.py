@@ -27,28 +27,28 @@ class SearilizeEquation:
     def transformFunction(self, equation):
         # reverse loop through to prepend everyting
         fEq = []
-        skipCount = 0
 
-        reversedEquation = (equation.split(" "))[::-1] if type(equation) != type([]) else equation[::-1]
+        reversedEquation = (equation.split(" "))[::-1] if type(equation) != type([]) else equation
 
-        for key, el in enumerate(reversedEquation):
-            if skipCount > 0:
-                skipCount -= 1
-                continue
+        key = 0
+        while key < len(reversedEquation):
+            el = reversedEquation[key]
 
             if not VSAEMath._isValidFunction(el):
                 fEq = [el] + fEq
             else:
                 if reversedEquation[key+3] == '(':
-                    skipCount = 3
                     subEquation = f'{el}({reversedEquation[key+2]})' if el !=  'fac' else f'{reversedEquation[key+2]}!'
+                    key += 3
                 else:
                     closingIndex = EFormat.getClosingBracket(reversedEquation, key, _searchBracket='(', _otherBracket=')', _appendIndex=1)
-                    skipCount = abs(closingIndex - key)
-                    innerFunctionEquation = self.transformFunction(reversedEquation[key+2:closingIndex][::-1])
+                    innerFunctionEquation = self.transformFunction(reversedEquation[key+2:closingIndex])
                     subEquation = f'{el}( {innerFunctionEquation.strip()} )' if el !=  'fac' else f'{innerFunctionEquation.strip()}!'
+                    key += abs(closingIndex - key)
 
                 fEq = ['('] + [subEquation] + fEq
+
+            key += 1
 
 
 
