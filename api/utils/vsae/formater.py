@@ -11,18 +11,18 @@ class EquationFormating:
         return False
 
     @staticmethod
-    def getClosingBracket(eq, index):
+    def getClosingBracket(eq, index, _searchBracket=')', _otherBracket='(', _appendIndex = 0):
 
         startBracketCount = 0
         endBracketCount = 0
         
         for key, bracket in enumerate(eq[index:]):
-            if bracket == '(':
+            if bracket == _otherBracket:
                 startBracketCount += 1
-            elif bracket == ')':
+            elif bracket == _searchBracket:
                 endBracketCount += 1
 
-            if startBracketCount == endBracketCount and startBracketCount != 0:
+            if startBracketCount + _appendIndex == endBracketCount and startBracketCount != 0:
                 return key + index
 
         return -1

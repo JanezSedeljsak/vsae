@@ -1,4 +1,5 @@
 from api.utils.vsae.vmath import MathOperations as VSAEMath
+from api.utils.vsae.formater import EquationFormating as EFormat
 
 class SearilizeEquation:
 
@@ -28,7 +29,8 @@ class SearilizeEquation:
         fEq = []
         skipCount = 0
 
-        reversedEquation = (equation.split(" "))[::-1]
+        reversedEquation = (equation.split(" "))[::-1] if type(equation) != type([]) else equation[::-1]
+
         for key, el in enumerate(reversedEquation):
             if skipCount > 0:
                 skipCount -= 1
@@ -37,9 +39,17 @@ class SearilizeEquation:
             if not VSAEMath._isValidFunction(el):
                 fEq = [el] + fEq
             else:
-                skipCount = 3
-                subEquation = f'{el}({reversedEquation[key+2]})' if el !=  'fac' else f'{reversedEquation[key+2]}!'
+                if reversedEquation[key+3] == '(':
+                    skipCount = 3
+                    subEquation = f'{el}({reversedEquation[key+2]})' if el !=  'fac' else f'{reversedEquation[key+2]}!'
+                else:
+                    closingIndex = EFormat.getClosingBracket(reversedEquation, key, _searchBracket='(', _otherBracket=')', _appendIndex=1)
+                    skipCount = abs(closingIndex - key)
+                    innerFunctionEquation = self.transformFunction(reversedEquation[key+2:closingIndex][::-1])
+                    subEquation = f'{el}({innerFunctionEquation})' if el !=  'fac' else f'{innerFunctionEquation}!'
 
                 fEq = [subEquation] + fEq[:-1]
+
+
 
         return " ".join(fEq).strip()
