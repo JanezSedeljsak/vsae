@@ -8,8 +8,8 @@ class SearilizeEquation:
     def __init__(self, _tree):
         tree = _tree
         searilizedEquation = self.searilizeTree(tree)
-        self.equation = self.transformFunction(searilizedEquation)
-
+        searilizedEquationStage2 = self.transformFunction(searilizedEquation)
+        self.equation = self.removeUnnecessaryBrackets(searilizedEquationStage2)
 
     def _getEquation(self):
         return self.equation
@@ -22,6 +22,26 @@ class SearilizeEquation:
             return f'( {left} {tree.data} {right} )'
         else:
             return VSAEMath._numF(tree.data) if not VSAEMath._isValidFunction(tree.data) else f'{tree.data}'
+
+
+    def removeUnnecessaryBrackets(self, equation):
+
+        dontAppend = set([])
+        withoutUnnecessaryBrackets = []
+        equationList = equation.strip().split(" ")
+
+        for key, el in enumerate(equationList):
+            if key in dontAppend:
+                continue
+            if el[-1] == '(':
+                closingIndex = EFormat.getClosingBracket(equationList, key)
+                if (equationList[key+1][-1] == '(' and equationList[closingIndex-1][-1] == ')'):
+                    dontAppend |= set([key, closingIndex])
+                    continue
+
+            withoutUnnecessaryBrackets.append(el)
+
+        return " ".join(withoutUnnecessaryBrackets)
 
 
     def transformFunction(self, equation):
