@@ -46,9 +46,9 @@ class SearilizeEquation:
                     closingIndex = EFormat.getClosingBracket(reversedEquation, key, _searchBracket='(', _otherBracket=')', _appendIndex=1)
                     skipCount = abs(closingIndex - key)
                     innerFunctionEquation = self.transformFunction(reversedEquation[key+2:closingIndex][::-1])
-                    subEquation = f'{el}({innerFunctionEquation})' if el !=  'fac' else f'{innerFunctionEquation}!'
+                    subEquation = f'{el}( {innerFunctionEquation.strip()} )' if el !=  'fac' else f'{innerFunctionEquation.strip()}!'
 
-                fEq = [subEquation] + fEq[:-1]
+                fEq = ['('] + [subEquation] + fEq
 
 
 

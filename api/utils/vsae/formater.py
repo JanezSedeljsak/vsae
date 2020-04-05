@@ -22,7 +22,7 @@ class EquationFormating:
             elif bracket == _searchBracket:
                 endBracketCount += 1
 
-            if startBracketCount + _appendIndex == endBracketCount and startBracketCount != 0:
+            if (startBracketCount + _appendIndex) == endBracketCount and startBracketCount != 0:
                 return key + index
 
         return -1
@@ -47,7 +47,13 @@ class EquationFormating:
             # EG: -cos(5*4) or -5*(-cos(5*4)/2)
             if prepend[-1] == '-':
                 prependList = list(prepend)
-                prependList[-1] = '( 0 -'
+                if len(prepend) == 1:
+                    prependList[-1] = '( 0 -'
+                elif len(prependList) > 2:
+                    if prependList[-3] == '(':
+                        prependList[-1] = '( 0 -'
+                else:
+                    prependList.append(' ( 0 -')
                 prepend = ''.join(prependList)
 
                 return f'{prepend} ( {inbetween} f {function} ) ) {append}'
@@ -60,7 +66,7 @@ class EquationFormating:
         for i in range(len(eq)):
             if eq[i:i+4] in funcOperators:
                 eq = EquationFormating.reformatEq(eq, i, i+3, eq[i:i+3])
-                continue    
+                continue
             elif eq[i:i+3] == 'ln(':
                 eq = EquationFormating.reformatEq(eq, i, i+2, 'ln')
         

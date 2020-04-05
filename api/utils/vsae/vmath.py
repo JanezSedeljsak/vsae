@@ -21,9 +21,9 @@ class MathOperations:
     @staticmethod
     def _funcMathOperation(num, funcName):
         return {
-            'cos': lambda num: cos(MathOperations._funcMathOperation(num)),
-            'sin': lambda num: sin(MathOperations._funcMathOperation(num)),
-            'tan': lambda num: tan(MathOperations._funcMathOperation(num)),
+            'cos': lambda num: cos(MathOperations._convertDegToRadians(num)),
+            'sin': lambda num: sin(MathOperations._convertDegToRadians(num)),
+            'tan': lambda num: tan(MathOperations._convertDegToRadians(num)),
             'log': lambda num: log10(num),
             'ln': lambda num: log1p(num),
             'abs': lambda num: fabs(num),

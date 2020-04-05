@@ -36,6 +36,7 @@ export default () => {
             setTreeData(response.data.base);
             setDisplayIndex(0);
             await sleep(1000);
+            addToast(`Izraz je bil uspešno pretvorjen v binarno drevo!`, getToastSettings('success'));
         }
         setLoading(false);
     }
