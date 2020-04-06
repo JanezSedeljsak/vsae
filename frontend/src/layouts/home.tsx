@@ -43,7 +43,8 @@ export default () => {
 
     const getToastSettings = (type: string): any => ({
         appearance: type,
-        autoDismiss: false
+        autoDismiss: true,
+        autoDismissTimeout: 2500
     });
 
     async function runSolve(index: number,  isFirstRun: boolean = true) {
@@ -56,8 +57,9 @@ export default () => {
             await sleep(1000);
             runSolve(index + 1, false)
         } else {
-            setDisableControlls(false);
             addToast(`Izraz je bil uspešno rešen; rezultat: ${result.toFixed(2)}`, getToastSettings('success'));
+            await sleep(2500);
+            setDisableControlls(false);
         }
     }
 
