@@ -46,6 +46,7 @@ class EquationFormating:
         append = eq[closingIndex+1:].strip()
 
         if len(prepend):
+            closingBrackets = ') )'
             if prepend[-1] == '-':
                 prependList = list(prepend)
                 if len(prepend) == 1:
@@ -53,11 +54,13 @@ class EquationFormating:
                 elif len(prependList) > 2:
                     if prependList[-3] == '(':
                         prependList[-1] = '( 0 -'
+                    else:
+                        closingBrackets = ')'
                 else:
                     prependList.append(' ( 0 -')
                 prepend = ''.join(prependList)
 
-                return f'{prepend} ( {inbetween} f {function} ) ) {append}'
+                return f'{prepend} ( {inbetween} f {function} {closingBrackets} {append}'
 
         return f'{prepend} ( {inbetween} f {function} ) {append}'
 
