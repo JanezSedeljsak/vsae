@@ -13,7 +13,7 @@ except ImportError:
 
 
 if os.environ.get('WORK_ENV') != 'PROD':
-    pytesseract.pytesseract.tesseract_cmd = 'C:/Tesseract-OCR/tesseract.exe'
+    ##pytesseract.pytesseract.tesseract_cmd = 'C:/Tesseract-OCR/tesseract.exe'
 
 class ImgToText:
     equation = ""
