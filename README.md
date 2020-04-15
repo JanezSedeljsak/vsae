@@ -4,7 +4,7 @@
 
 VSEA or Visualization of solving arithmetic expressions
 
-![alt text](https://github.com/JanezSedeljsak/vsae/blob/master/test/screen.jpg)
+![banner-img](https://github.com/JanezSedeljsak/vsae/blob/new-primary-branch/test/screen.jpg)
 
 ## Getting Started
 
@@ -18,13 +18,14 @@ VSEA or Visualization of solving arithmetic expressions
 
 * NodeJS >= v10.0.0
 * Python >= v3.6
+* Tesseract
 * Yarn
 
 ## Built With
 
-* [flask](https://palletsprojects.com/p/flask/)
-* [react-typescript](https://reactjs.org)
-* [p5.js](https://p5js.org)
+* [Flask](https://palletsprojects.com/p/flask/)
+* [React](https://reactjs.org)
+* [P5.js](https://p5js.org)
 
 ## License
 
