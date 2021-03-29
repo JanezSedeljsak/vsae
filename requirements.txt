@@ -38,7 +38,7 @@ pkginfo==1.5.0.1
 psycopg2==2.8.4
 pycodestyle==2.5.0
 pyDes==2.0.1
-Pygments==2.5.2
+Pygments==2.7.4
 pylint==2.4.3
 pytesseract==0.3.3
 python-decouple==3.1
